@@ -20,12 +20,13 @@ function rInt(x){return Math.floor(Math.random()*x);};
 
 //==  MISC RENDERING  ========================================================//
 
-function rgb(r,g,b){gfx.fillStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
+function rgb(r,g,b){gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 
 //==  MAIN LOOP  =============================================================//
 
+var sq3 = Math.sqrt(3);
+
 function drawHex(x,y,r){
-	var sq3 = Math.sqrt(3);
 	gfx.save();
 	gfx.translate(x,y);
 	gfx.beginPath();
@@ -60,7 +61,16 @@ function render(){
 	rgb(1,0,0);
 	drawHex(ww/2,wh/2,100);
 	rgb(1,1,1);
-	drawHex(ww/2,wh/2,100);
+	drawHex(ww/2,wh/2,90);
+
+	rgb(0,0,0);
+	gfx.save();
+	gfx.translate(ww/2,wh/2);
+	gfx.beginPath();
+		gfx.moveTo(0,0);
+		gfx.lineTo(100/4*sq3,100*3/4);
+	gfx.stroke();
+	gfx.restore();
 
 	gfx.restore();
 };
