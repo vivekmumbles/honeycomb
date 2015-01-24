@@ -24,6 +24,22 @@ function rgb(r,g,b){gfx.fillStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)
 
 //==  MAIN LOOP  =============================================================//
 
+function drawHex(x,y,r){
+	var sq3 = Math.sqrt(3);
+	gfx.save();
+	gfx.translate(x,y);
+	gfx.beginPath();
+	gfx.moveTo(0,r);
+	gfx.lineTo(r/2*sq3,r/2);
+	gfx.lineTo(r/2*sq3,-r/2);
+	gfx.lineTo(0,-r);
+	gfx.lineTo(-r/2*sq3,-r/2);
+	gfx.lineTo(-r/2*sq3,r/2);
+	gfx.lineTo(0,r);
+	gfx.fill();
+	gfx.restore();
+};
+
 function render(){
 	var currentTick = new Date().getTime();
 	elapsed = currentTick-tick;
@@ -40,6 +56,11 @@ function render(){
 	gfx.lineTo(10,wh-10);
 	gfx.lineTo(10,10);
 	gfx.fill();
+
+	rgb(1,0,0);
+	drawHex(ww/2,wh/2,100);
+	rgb(1,1,1);
+	drawHex(ww/2,wh/2,100);
 
 	gfx.restore();
 };
