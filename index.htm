@@ -10,6 +10,8 @@
 
 \*+==========================================================================+*/
 
+"use strict"
+
 var canvas = document.createElement("canvas");
 var gfx = canvas.getContext("2d");
 var ww = canvas.width  = window.innerWidth;
@@ -17,17 +19,41 @@ var wh = canvas.height = window.innerHeight;
 var tick,elapsed;
 function rfloat(x){return Math.random()*x;};
 function rInt(x){return Math.floor(Math.random()*x);};
+function shuffle(ls){return ls.sort(function(){return 0.5-Math.random();});}
 
 //==  MISC RENDERING  ========================================================//
 
 function rgb(r,g,b){gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 
+function hsv(h,s,v){
+	var r,g,b,i,f,p,q,t;
+	if (h&&s===undefined&&v===undefined)s=h.s,v=h.v,h=h.h;
+	i = Math.floor(h*6);
+	f = h*6-i;
+	p = v*(1-s);
+	q = v*(1-f*s);
+	t = v*(1-(1-f)*s);
+	switch(i%6){
+		case 0:r=v,g=t,b=p;break;
+		case 1:r=q,g=v,b=p;break;
+		case 2:r=p,g=v,b=t;break;
+		case 3:r=p,g=q,b=v;break;
+		case 4:r=t,g=p,b=v;break;
+		case 5:r=v,g=p,b=q;break;
+	}gfx.fillStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";
+}
+
+var goldenAngle = 0.381966;
+
 //==  GRID GENERATION  =======================================================//
 
-// global 1d list of cells
-// global 1d list of markers
+var sq3 = Math.sqrt(3);
+var hexRad = 64;
+var minDepth = 3;
+var cellLs;
+var markerLs;
 
-cell = function(){
+var cell = function(){
 
 /*
 	4 / \ 5
@@ -35,8 +61,10 @@ cell = function(){
 	2 \ / 1
 */
 
-	this.path = [-1,-1,-1,-1,-1,-1]; // 0-1 | 2-3 | 4-5
+	this.path = []; // 0-1 | 2-3 | 4-5
+	this.used = [false,false,false,false,false,false];
 	this.adjacent = [null,null,null,null,null,null]; // E SE SW W NW NE
+	this.markers = [null,null,null,null,null,null]; // E SE SW W NW NE
 	this.rotation = 0; // cw = + | ccw = - [ when this is a float, treat as its rendered rotation, treat discrete rot as invalid ]
 	this.goalRotation = 0; // when rotating tile, modify this value instead of rotation
 	this.x;
@@ -48,22 +76,131 @@ cell = function(){
 	this.rotateCCW = function(){--goalRotation};
 };
 
-marker = function(){
-	this.attachedTo = null;
-	this.side = -1; // 0-5, side marker is attached to on cell
+var marker = function(attach,side,color){
+	this.attachedTo = attach;
+	this.side = side; // 0-5, side marker is attached to on cell
+	this.color = color; // what color
 	this.partner = null; // marker this should connect to
-	this.color = -1; // what color
 
 	this.update = function(){};
 	this.render = function(){};
 };
 
 function generateGrid(){
+	var preGrid = [
+		[1,1,1,0,0],
+		[1,1,1,1,0],
+		[1,1,1,1,1],
+		[0,1,1,1,1],
+		[0,0,1,1,1],
+	];
+
+	var markerPairs = 1;
+
+	// initializes cells, grid, and cellLs
+	cellLs = [];
+	for(var i=0;i<preGrid.length;++i)
+	for(var j=0;j<preGrid[i].length;++j)
+	if(preGrid[i][j] === 1){
+		var c = new cell(); // TODO: setup ctor
+		preGrid[i][j] = c;
+		cellLs.push(c);
+	}else preGrid[i][j] = null;
+
+	// transpose grid
+	var grid = preGrid[0].map(function(col,i){
+		return preGrid.map(function(row){
+			return row[i];
+		});
+	});
+
+	// initialize pointers and coordinates
+	for(var i=0;i<grid.length;++i)
+	for(var j=0;j<grid[i].length;++j)
+	if(grid[i][j] !== null){
+		grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*hexRad/2*sq3;
+		grid[i][j].y = (1.5*hexRad*j)-hexRad*Math.floor(grid.length/2);
+		if(i<grid.length-1)                     grid[i][j].adjacent[0]=grid[i+1][j  ];
+		if(i<grid.length-1&&j<grid[i].length-1) grid[i][j].adjacent[1]=grid[i+1][j+1];
+		if(j<grid[i].length-1)                  grid[i][j].adjacent[2]=grid[i  ][j+1];
+		if(i>0)                                 grid[i][j].adjacent[3]=grid[i-1][j  ];
+		if(i>0&&j>0)                            grid[i][j].adjacent[4]=grid[i-1][j-1];
+		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
+	}
+
+	// initialize markers
+	markerLs = [];
+	for(var i=0;i<markerPairs;++i){
+		while(true){
+			var c,dir;
+			outer:while(true){
+				c = cellLs[rInt(cellLs.length)]; // TODO: make this a list, pop searched cells from list
+				var adjLs = shuffle([0,1,2,3,4,5]);
+				for(var a=0;a<6;++a)if(c.adjacent[adjLs[a]] === null){
+					dir = adjLs[a];
+					break outer;
+				}
+			}
+
+			// returns true=found dest,keep path | false=not found dest,remove path
+			var destCell,destDir;
+			var recurse = function(fromCell,fromDir,depth){
+				var adjLs = [0,1,2,3,4,5];
+				adjLs.splice(fromDir,1);
+				shuffle(adjLs);
+				for(var a=0;a<6;++a){
+					if(fromCell.used[adjLs[a]])continue;
+					fromCell.used[fromDir] = true;
+					fromCell.used[adjLs[a]] = true;
+					fromCell.path.push(fromDir);
+					fromCell.path.push(adjLs[a]);
+					var d = fromCell.adjacent[adjLs[a]];
+					if(d !== null && d !== undefined){ // TODO: track down undefined
+						if(recurse(d,adjLs[a],depth+1))return true;
+						else{
+							fromCell.used[fromDir] = false;
+							fromCell.used[adjLs[a]] = false;
+							fromCell.path.pop();
+							fromCell.path.pop();
+							continue;
+						}
+					}else if(fromCell.markers[adjLs[a]])continue;
+					else if(depth < minDepth)continue;
+					else{
+						destCell = fromCell;
+						destDir = adjLs[a];
+						return true;
+					}
+				}return false;
+			};
+
+			if(!recurse(c,dir,0))continue;
+			var m0 = new marker(c,dir,i*goldenAngle);
+			var m1 = new marker(destCell,destDir,i*goldenAngle);
+			m0.partner = m1;
+			m1.partner = m0;
+
+			markerLs.push(m0);
+			markerLs.push(m1);
+			break;
+		}
+	}
+
+/*
+	// TODO: track down mismatched paths
+	// add rest of paths
+	for(var i in cellLs){
+		var c = cellLs[i];
+		if(c.path.length === 6)continue;
+		var indicies = c.used.map(function(b,i){if(!b)return i;}).filter(function(e){return e !== undefined;});
+		if(indicies.length%2 !== 0)console.log(indicies);
+	}
+*/
 };
 
-//==  MAIN LOOP  =============================================================//
+generateGrid();
 
-var sq3 = Math.sqrt(3);
+//==  MAIN LOOP  =============================================================//
 
 function drawHex(x,y,r){
 	gfx.save();
@@ -81,6 +218,7 @@ function drawHex(x,y,r){
 };
 
 function render(){
+//	requestAnimationFrame(render);
 	var currentTick = new Date().getTime();
 	elapsed = currentTick-tick;
 	tick = currentTick;
@@ -111,6 +249,21 @@ function render(){
 	gfx.stroke();
 	gfx.restore();
 
+	rgb(0,1,0);
+	gfx.save();
+	var s = (Math.sin(tick*0.01)*0.5+0.5)*100;
+	gfx.scale(s,s);
+	gfx.beginPath();
+		gfx.moveTo(1,1);
+		gfx.lineTo(10,10);
+	gfx.stroke();
+	gfx.restore();
+
+	rgb(0,0,1);
+	for(var i in cellLs){
+		var c = cellLs[i];
+		drawHex(c.x,c.y,hexRad-2);
+	}
 	gfx.restore();
 };
 
@@ -122,12 +275,12 @@ function getMousePos(evt){
 };
 
 canvas.addEventListener("mousedown",function(e){
-	mouse = getMousePos(e);
+	var mouse = getMousePos(e);
 	render(); // XXX: remove if theres continuous animation
 });
 
 canvas.addEventListener("mouseup",function(e){
-	mouse = getMousePos(e);
+	var mouse = getMousePos(e);
 	render(); // XXX: remove if theres continuous animation
 });
 
