@@ -20,7 +20,6 @@ function rInt(x){return Math.floor(Math.random()*x);};
 
 //==  MISC RENDERING  ========================================================//
 
-<<<<<<< HEAD
 function rgb(r,g,b){gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 
 //==  GRID GENERATION  =======================================================//
@@ -67,14 +66,6 @@ function generateGrid(){
 var sq3 = Math.sqrt(3);
 
 function drawHex(x,y,r){
-=======
-function rgb(r,g,b){gfx.fillStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
-
-//==  MAIN LOOP  =============================================================//
-
-function drawHex(x,y,r){
-	var sq3 = Math.sqrt(3);
->>>>>>> 57c6dee59b6f093fceadcaccc75229e6cb51e487
 	gfx.save();
 	gfx.translate(x,y);
 	gfx.beginPath();
@@ -109,7 +100,6 @@ function render(){
 	rgb(1,0,0);
 	drawHex(ww/2,wh/2,100);
 	rgb(1,1,1);
-<<<<<<< HEAD
 	drawHex(ww/2,wh/2,90);
 
 	rgb(0,0,0);
@@ -120,9 +110,6 @@ function render(){
 		gfx.lineTo(100/4*sq3,100*3/4);
 	gfx.stroke();
 	gfx.restore();
-=======
-	drawHex(ww/2,wh/2,100);
->>>>>>> 57c6dee59b6f093fceadcaccc75229e6cb51e487
 
 	gfx.restore();
 };
