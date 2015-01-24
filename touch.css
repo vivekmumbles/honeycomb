@@ -1,9 +1,0 @@
-
-#square {
-    width: 200px;
-    height: 200px;
-    background-color: red;
-    margin: auto;
-    transform: translateY(50%);
-    border-radius: 25px;
-}
