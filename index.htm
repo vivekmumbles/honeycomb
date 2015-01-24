@@ -123,13 +123,13 @@ var marker = function(attach,side,color){
 function generateGrid(){
 	var preGrid = [
 		[1,1,1,0,0],
-		[1,1,1,1,0],
+		[0,1,1,0,0],
 		[1,1,0,1,1],
 		[0,1,1,1,1],
-		[0,0,1,1,1],
+		[0,0,1,0,1],
 	];
 
-	var markerPairs = 4;
+	var markerPairs = 3;
 
 	// initializes cells, grid, and cellLs
 	cellLs = [];
@@ -235,15 +235,14 @@ function generateGrid(){
 		}
 	}
 
-/*
 	// add rest of paths
 	for(var i in cellLs){
 		var c = cellLs[i];
 		if(c.path.length === 6)continue;
 		var indicies = c.used.map(function(b,i){if(!b)return i;}).filter(function(e){return e !== undefined;});
-		if(indicies.length%2 !== 0)console.log(indicies);
+		shuffle(indicies);
+		c.path = c.path.concat(indicies);
 	}
-*/
 };
 
 generateGrid();
