@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><head><title>Polyomino</title><meta charset="UTF-8">
+<body bgcolor="000000"><canvas id="canvas" width="520" height="520"></canvas>
+<div style="font:48px arial;letter-spacing:-3px;font-weight:800;color:white;">Honeycomb</div>
+<script type="text/javascript">
+
+/*+==========================================================================+*\
+                 __ ______  _  ________  ___________  __  ______ 
+                / // / __ \/ |/ / __/\ \/ / ___/ __ \/  |/  / _ )
+               / _  / /_/ /    / _/   \  / /__/ /_/ / /|_/ / _  |
+              /_//_/\____/_/|_/___/   /_/\___/\____/_/  /_/____/ 
+
+\*+==========================================================================+*/
+
+var canvas = document.getElementById("canvas");
+var gfx = canvas.getContext("2d");
+var ww = canvas.width;
+var wh = canvas.height;
+var tick,elapsed;
+function rfloat(x){return Math.random()*x;}
+function rInt(x){return Math.floor(Math.random()*x);}
+
+//==  MISC RENDERING  ========================================================//
+
+function rgb(r,g,b){gfx.fillStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";}
+
+//==  MAIN LOOP  =============================================================//
+
+function render(){
+//	requestanimationframe(render); // continuous rendering
+	var currentTick = new Date().getTime();
+	elapsed = currentTick-tick;
+	tick = currentTick;
+	gfx.clearRect(0,0,ww,wh);
+	gfx.save();
+	gfx.restore();
+}
+
+//==  CONTROLS HANDLING  =====================================================//
+
+function getMousePos(evt){
+	var rect = canvas.getBoundingClientRect();
+	return{x:evt.clientX-rect.left,y:evt.clientY-rect.top};
+}
+
+canvas.addEventListener("mousedown",function(e){
+	mouse = getMousePos(e);
+});
+
+canvas.addEventListener("mouseup",function(e){
+	mouse = getMousePos(e);
+});
+
+canvas.onselectstart = function(){return false;}; // prevent right click menu
+
+//==  PROGRAM ENTRY  =========================================================//
+
+(function main(){tick=new Date().getTime();render();})();
+
+</script></body></html>
