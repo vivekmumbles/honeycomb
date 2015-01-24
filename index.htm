@@ -22,6 +22,45 @@ function rInt(x){return Math.floor(Math.random()*x);};
 
 function rgb(r,g,b){gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 
+//==  GRID GENERATION  =======================================================//
+
+// global 1d list of cells
+// global 1d list of markers
+
+cell = function(){
+
+/*
+	4 / \ 5
+	3 | | 0
+	2 \ / 1
+*/
+
+	this.path = [-1,-1,-1,-1,-1,-1]; // 0-1 | 2-3 | 4-5
+	this.adjacent = [null,null,null,null,null,null]; // E SE SW W NW NE
+	this.rotation = 0; // cw = + | ccw = - [ when this is a float, treat as its rendered rotation, treat discrete rot as invalid ]
+	this.goalRotation = 0; // when rotating tile, modify this value instead of rotation
+	this.x;
+	this.y;
+
+	this.update = function(){rotation+=(goalRotation-rotation)*elapsed*0.01;}; // QSTN: should this return a bool when its done interpolating?
+	this.render = function(){};
+	this.rotateCW  = function(){++goalRotation};
+	this.rotateCCW = function(){--goalRotation};
+};
+
+marker = function(){
+	this.attachedTo = null;
+	this.side = -1; // 0-5, side marker is attached to on cell
+	this.partner = null; // marker this should connect to
+	this.color = -1; // what color
+
+	this.update = function(){};
+	this.render = function(){};
+};
+
+function generateGrid(){
+};
+
 //==  MAIN LOOP  =============================================================//
 
 var sq3 = Math.sqrt(3);
