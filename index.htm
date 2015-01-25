@@ -474,7 +474,7 @@ canvas.addEventListener("touchmove",function(e){
 	if     (move<0) minCell.rotateCCW();
 	else if(move>0) minCell.rotateCW();
 	tchMove = [tch.screenX,tch.screenY];
-    }
+    } requestEval();
 },false);
 
 //==  PROGRAM ENTRY + MISC  ==================================================//
