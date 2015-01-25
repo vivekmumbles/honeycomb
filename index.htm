@@ -469,7 +469,7 @@ canvas.addEventListener("touchmove",function(e){
     e.preventDefault();
     var tch = e.changedTouches[0];
     var move = tch.screenX - tchMove[0];
-    if(Math.abs(move)>20){
+    if(Math.abs(move)>50){
 	console.log("tchMove = "+tchMove[0]);
 	if     (move<0) minCell.rotateCCW();
 	else if(move>0) minCell.rotateCW();
