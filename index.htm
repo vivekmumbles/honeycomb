@@ -14,9 +14,7 @@
 
 var canvas = document.createElement("canvas");
 var gfx = canvas.getContext("2d");
-var ww = canvas.width  = window.innerWidth;
-var wh = canvas.height = window.innerHeight;
-var tick=0,tickOffset=0,elapsed=0;
+var ww,wh,tick=0,tickOffset=0,elapsed=0;
 function rfloat(x){return Math.random()*x;};
 function rInt(x){return Math.floor(Math.random()*x);};
 function shuffle(ls){return ls.sort(function(){return 0.5-Math.random();});}
@@ -73,28 +71,28 @@ var drawPath = function(cell,i,offset){
 	var p0 = Math.min(cell.path[i],cell.path[i+1]);
 	var p1 = Math.max(cell.path[i],cell.path[i+1]);
 	switch(p0*10+p1){
-		case  1:gfx.arc(hexRad/2*sq3,hexRad/2,hexRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
-		case  2:gfx.arc(hexRad/2*sq3,hexRad*1.5,hexRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
-		case  3:gfx.moveTo(hexRad/2*sq3-offset,0);gfx.lineTo(-hexRad/2*sq3+offset,0);break;
-		case  4:gfx.arc(hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/2*Math.PI+offset,5/6*Math.PI-offset);break;
-		case  5:gfx.arc(hexRad/2*sq3,-hexRad/2,hexRad/2,1/2*Math.PI+offset,7/6*Math.PI-offset);break;
-		case 12:gfx.arc(0,hexRad,hexRad/2,7/6*Math.PI+offset,11/6*Math.PI-offset);break;
-		case 13:gfx.arc(-hexRad/2*sq3,hexRad*1.5,hexRad*1.5,3/2*Math.PI+offset,11/6*Math.PI-offset);break;
-		case 14:gfx.moveTo((hexRad-offset)/4*sq3,(hexRad-offset)*3/4);gfx.lineTo(-(hexRad+offset)/4*sq3,-(hexRad+offset)*3/4);break;
-		case 15:gfx.arc(hexRad*sq3,0,hexRad*1.5,5/6*Math.PI+offset,7/6*Math.PI-offset);break;
-		case 23:gfx.arc(-hexRad/2*sq3,hexRad/2,hexRad/2,3/2*Math.PI+offset,1/6*Math.PI-offset);break;
-		case 24:gfx.arc(-hexRad*sq3,0,hexRad*1.5,-1/6*Math.PI+offset,1/6*Math.PI-offset);break;
-		case 25:gfx.moveTo(-(hexRad+offset)/4*sq3,(hexRad-offset)*3/4);gfx.lineTo((hexRad-offset)/4*sq3,-(hexRad+offset)*3/4);break;
-		case 34:gfx.arc(-hexRad/2*sq3,-hexRad/2,hexRad/2,11/6*Math.PI+offset,1/2*Math.PI-offset);break;
-		case 35:gfx.arc(-hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/6*Math.PI+offset,1/2*Math.PI-offset);break;
-		case 45:gfx.arc(0,-hexRad,hexRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
+		case  1:gfx.arc(baselineRad/2*sq3,baselineRad/2,baselineRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
+		case  2:gfx.arc(baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
+		case  3:gfx.moveTo(baselineRad/2*sq3-offset,0);gfx.lineTo(-baselineRad/2*sq3+offset,0);break;
+		case  4:gfx.arc(baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/2*Math.PI+offset,5/6*Math.PI-offset);break;
+		case  5:gfx.arc(baselineRad/2*sq3,-baselineRad/2,baselineRad/2,1/2*Math.PI+offset,7/6*Math.PI-offset);break;
+		case 12:gfx.arc(0,baselineRad,baselineRad/2,7/6*Math.PI+offset,11/6*Math.PI-offset);break;
+		case 13:gfx.arc(-baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,3/2*Math.PI+offset,11/6*Math.PI-offset);break;
+		case 14:gfx.moveTo((baselineRad-offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo(-(baselineRad+offset)/4*sq3,-(baselineRad+offset)*3/4);break;
+		case 15:gfx.arc(baselineRad*sq3,0,baselineRad*1.5,5/6*Math.PI+offset,7/6*Math.PI-offset);break;
+		case 23:gfx.arc(-baselineRad/2*sq3,baselineRad/2,baselineRad/2,3/2*Math.PI+offset,1/6*Math.PI-offset);break;
+		case 24:gfx.arc(-baselineRad*sq3,0,baselineRad*1.5,-1/6*Math.PI+offset,1/6*Math.PI-offset);break;
+		case 25:gfx.moveTo(-(baselineRad+offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo((baselineRad-offset)/4*sq3,-(baselineRad+offset)*3/4);break;
+		case 34:gfx.arc(-baselineRad/2*sq3,-baselineRad/2,baselineRad/2,11/6*Math.PI+offset,1/2*Math.PI-offset);break;
+		case 35:gfx.arc(-baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/6*Math.PI+offset,1/2*Math.PI-offset);break;
+		case 45:gfx.arc(0,-baselineRad,baselineRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
 	}gfx.stroke();
 }
 
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var hexRad = 48;
+var baselineRad = 48;
 var minDepth = 3;
 var markerPairs = 5;
 var cellLs;
@@ -104,6 +102,7 @@ var fading = false;
 var evaluate = false;
 var lastEvalReqTick = -1;
 var cellCtr = 0;
+var width,height,scale;
 
 var cell = function(){
 	this.id = ++cellCtr+".";
@@ -120,10 +119,10 @@ var cell = function(){
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
 		if(this.goalRotation !== this.rotation && Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
-		gfx.translate(this.x+ww/2,this.y+wh/2);
+		gfx.translate(this.x,this.y);
 		gfx.rotate(this.rotation*Math.PI/3);
 		gfx.shadowBlur = 8;
-		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,hexRad-2);
+		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,baselineRad-2);
 		gfx.restore();
 		return this.rotation === this.goalRotation;
 	}
@@ -134,9 +133,9 @@ var cell = function(){
 		}
 
 		gfx.save();
-		gfx.translate(this.x+ww/2,this.y+wh/2);
+		gfx.translate(this.x,this.y);
 		gfx.rotate(this.rotation*Math.PI/3);
-		rgb(0.6,0.6,0.6);drawHex(0,0,hexRad-8);
+		rgb(0.6,0.6,0.6);drawHex(0,0,baselineRad-8);
 		for(var i=0;i<this.path.length;i+=2){
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
 			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i,-0.02);
@@ -145,7 +144,7 @@ var cell = function(){
 
 	this.highlight = function(){
 		gfx.save();
-		gfx.translate(this.x+ww/2,this.y+wh/2);
+		gfx.translate(this.x,this.y);
 		drawPath(this,0);
 		gfx.restore();
 	};
@@ -164,15 +163,15 @@ var marker = function(attach,side,color){
 
 	this.render = function(){
 		gfx.save();
-		gfx.translate(this.attachedTo.x+ww/2,this.attachedTo.y+wh/2);
+		gfx.translate(this.attachedTo.x,this.attachedTo.y);
 		var r = this.side*1/3*Math.PI;
 		gfx.shadowColor = rgb(0.1,0.1,0.1);
 		gfx.shadowBlur = 8;
 		gfx.lineWidth = 4;
 		hsv(this.color,1,1);
 		gfx.beginPath();
-		gfx.moveTo(Math.cos(r)*hexRad*0.92,Math.sin(r)*hexRad*0.92);
-		gfx.lineTo(Math.cos(r)*hexRad*1.12,Math.sin(r)*hexRad*1.12);
+		gfx.moveTo(Math.cos(r)*baselineRad*0.92,Math.sin(r)*baselineRad*0.92);
+		gfx.lineTo(Math.cos(r)*baselineRad*1.12,Math.sin(r)*baselineRad*1.12);
 		gfx.stroke();
 
 		gfx.restore();
@@ -206,11 +205,13 @@ function generateGrid(){
 	});
 
 	// initialize pointers and coordinates
+	var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
 	for(var i=0;i<grid.length;++i)
 	for(var j=0;j<grid[i].length;++j)
 	if(grid[i][j] !== null){
-		grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*hexRad/2*sq3;
-		grid[i][j].y = (1.5*hexRad*j)-1.5*hexRad*Math.floor(grid.length/2);
+		var x = grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*baselineRad/2*sq3;
+		var y = grid[i][j].y = (1.5*baselineRad*j)-1.5*baselineRad*Math.floor(grid.length/2);
+		if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
 		if(i<grid.length-1)                     grid[i][j].adjacent[0]=grid[i+1][j  ];
 		if(i<grid.length-1&&j<grid[i].length-1) grid[i][j].adjacent[1]=grid[i+1][j+1];
 		if(j<grid[i].length-1)                  grid[i][j].adjacent[2]=grid[i  ][j+1];
@@ -218,6 +219,14 @@ function generateGrid(){
 		if(i>0&&j>0)                            grid[i][j].adjacent[4]=grid[i-1][j-1];
 		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
 	}
+
+	minX -= baselineRad/2*sq3;
+	maxX += baselineRad/2*sq3;
+	minY -= baselineRad;
+	maxY += baselineRad;
+
+	width  = (maxX-minX)/baselineRad;
+	height = (maxY-minY)/baselineRad;
 
 	// initialize markers
 	markerLs = [];
@@ -381,8 +390,11 @@ function render(){
 
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
-
 	gfx.save();
+
+	gfx.translate(ww/2,wh/2);
+	gfx.scale(scale/baselineRad,scale/baselineRad);
+
 	var animating = false;
 	for(var i in cellLs)if(!cellLs[i].shadow())animating = true;
 	for(var i in cellLs)cellLs[i].render();
@@ -397,7 +409,6 @@ function render(){
 		gfx.lineWidth = 4;
 		for(var j in f[1])f[1][j].highlight();
 	}if(animating)requestAnimationFrame(render);
-	
 	gfx.restore();
 };
 
@@ -410,26 +421,22 @@ function getMousePos(evt){
 
 canvas.addEventListener("mouseup",function(e){
 	var mouse = getMousePos(e);
-
 	var minDist = Infinity;
 	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
-		var x = c.x+ww/2-mouse.x;
-		var y = c.y+wh/2-mouse.y;
+		var x = c.x*scale/baselineRad+ww/2-mouse.x;
+		var y = c.y*scale/baselineRad+wh/2-mouse.y;
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
 			minCell = c;
 		}
-	}if(minDist>hexRad*hexRad)return;
-
+	}if(minDist>scale*scale)return;
 	switch(e.which){
 		case 1:minCell.rotateCCW();break;
 		case 3:minCell.rotateCW();break;
-	}
-
-	requestEval();
+	}requestEval();
 });
 
 document.addEventListener("keyup",function(e){
@@ -446,12 +453,18 @@ canvas.oncontextmenu = function(){return false;}; // prevent right click menu
 window.onresize = function(){ // auto-resize canvas to window
 	ww = canvas.width  = window.innerWidth;
 	wh = canvas.height = window.innerHeight;
+
+	var padding = 32;
+	var scaleX = (ww-padding)/width;
+	var scaleY = (wh-padding)/height;
+	scale = Math.min(scaleX,scaleY);
+
 	requestAnimationFrame(render);
 };
 
 (function main(){
 	document.body.appendChild(canvas);
-	generateGrid();
+	window.onresize();generateGrid();window.onresize(); // hacky, i know
 	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
