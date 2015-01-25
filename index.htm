@@ -59,26 +59,27 @@ var fillLs;
 var rotating = false;
 var fading = false;
 
-var drawPath = function(cell,i){
+var drawPath = function(cell,i,offset){
+	if(offset === undefined)offset = 0;
 	gfx.beginPath();
 	var p0 = Math.min(cell.path[i],cell.path[i+1]);
 	var p1 = Math.max(cell.path[i],cell.path[i+1]);
 	switch(p0*10+p1){
-		case  1:gfx.arc(hexRad/2*sq3,hexRad/2,hexRad/2,5/6*Math.PI,3/2*Math.PI);break;
-		case  2:gfx.arc(hexRad/2*sq3,hexRad*1.5,hexRad*1.5,7/6*Math.PI,3/2*Math.PI);break;
-		case  3:gfx.moveTo(hexRad/2*sq3,0);gfx.lineTo(-hexRad/2*sq3,0);break;
-		case  4:gfx.arc(hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/2*Math.PI,5/6*Math.PI);break;
-		case  5:gfx.arc(hexRad/2*sq3,-hexRad/2,hexRad/2,1/2*Math.PI,7/6*Math.PI);break;
-		case 12:gfx.arc(0,hexRad,hexRad/2,7/6*Math.PI,11/6*Math.PI);break;
-		case 13:gfx.arc(-hexRad/2*sq3,hexRad*1.5,hexRad*1.5,3/2*Math.PI,11/6*Math.PI);break;
-		case 14:gfx.moveTo(hexRad/4*sq3,hexRad*3/4);gfx.lineTo(-hexRad/4*sq3,-hexRad*3/4);break;
-		case 15:gfx.arc(hexRad*sq3,0,hexRad*1.5,5/6*Math.PI,7/6*Math.PI);break;
-		case 23:gfx.arc(-hexRad/2*sq3,hexRad/2,hexRad/2,3/2*Math.PI,1/6*Math.PI);break;
-		case 24:gfx.arc(-hexRad*sq3,0,hexRad*1.5,-1/6*Math.PI,1/6*Math.PI);break;
-		case 25:gfx.moveTo(-hexRad/4*sq3,hexRad*3/4);gfx.lineTo(hexRad/4*sq3,-hexRad*3/4);break;
-		case 34:gfx.arc(-hexRad/2*sq3,-hexRad/2,hexRad/2,11/6*Math.PI,1/2*Math.PI);break;
-		case 35:gfx.arc(-hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/6*Math.PI,1/2*Math.PI);break;
-		case 45:gfx.arc(0,-hexRad,hexRad/2,1/6*Math.PI,5/6*Math.PI);break;
+		case  1:gfx.arc(hexRad/2*sq3,hexRad/2,hexRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
+		case  2:gfx.arc(hexRad/2*sq3,hexRad*1.5,hexRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
+		case  3:gfx.moveTo(hexRad/2*sq3-offset,0);gfx.lineTo(-hexRad/2*sq3+offset,0);break;
+		case  4:gfx.arc(hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/2*Math.PI+offset,5/6*Math.PI-offset);break;
+		case  5:gfx.arc(hexRad/2*sq3,-hexRad/2,hexRad/2,1/2*Math.PI+offset,7/6*Math.PI-offset);break;
+		case 12:gfx.arc(0,hexRad,hexRad/2,7/6*Math.PI+offset,11/6*Math.PI-offset);break;
+		case 13:gfx.arc(-hexRad/2*sq3,hexRad*1.5,hexRad*1.5,3/2*Math.PI+offset,11/6*Math.PI-offset);break;
+		case 14:gfx.moveTo((hexRad-offset)/4*sq3,(hexRad-offset)*3/4);gfx.lineTo(-(hexRad+offset)/4*sq3,-(hexRad+offset)*3/4);break;
+		case 15:gfx.arc(hexRad*sq3,0,hexRad*1.5,5/6*Math.PI+offset,7/6*Math.PI-offset);break;
+		case 23:gfx.arc(-hexRad/2*sq3,hexRad/2,hexRad/2,3/2*Math.PI+offset,1/6*Math.PI-offset);break;
+		case 24:gfx.arc(-hexRad*sq3,0,hexRad*1.5,-1/6*Math.PI+offset,1/6*Math.PI-offset);break;
+		case 25:gfx.moveTo(-(hexRad+offset)/4*sq3,(hexRad-offset)*3/4);gfx.lineTo((hexRad-offset)/4*sq3,-(hexRad+offset)*3/4);break;
+		case 34:gfx.arc(-hexRad/2*sq3,-hexRad/2,hexRad/2,11/6*Math.PI+offset,1/2*Math.PI-offset);break;
+		case 35:gfx.arc(-hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/6*Math.PI+offset,1/2*Math.PI-offset);break;
+		case 45:gfx.arc(0,-hexRad,hexRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
 	}gfx.stroke();
 }
 
@@ -92,30 +93,38 @@ var cell = function(){
 	this.x;
 	this.y;
 
-	this.highlight = function(){
+	this.shadow = function(){
+		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
+		if(Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
-		drawPath(this,0);
+		gfx.rotate(this.rotation*Math.PI/3);
+		gfx.shadowBlur = 8;
+		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,hexRad-2);
 		gfx.restore();
-	};
+		return this.rotation === this.goalRotation;
+	}
 
 	this.render = function(){
 		for(var i=0;i<6;++i)if(this.adjacent[i] === null && this.markers[i] === null){
 			// TODO: experiment with endcaps
 		}
 
-		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
-		if(Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
-		rgb(0.1,0.1,0.1);drawHex(0,0,hexRad-2);
 		rgb(0.6,0.6,0.6);drawHex(0,0,hexRad-8);
 		for(var i=0;i<this.path.length;i+=2){
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
-			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i);
+			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i,-0.02);
 		}gfx.restore();
-		return this.rotation === this.goalRotation;
+	};
+
+	this.highlight = function(){
+		gfx.save();
+		gfx.translate(this.x+ww/2,this.y+wh/2);
+		drawPath(this,0);
+		gfx.restore();
 	};
 
 	this.rotateCW  = function(){++this.goalRotation;};
@@ -347,7 +356,8 @@ function render(){
 	gfx.save();
 
 	var animating = false;
-	for(var i in cellLs)if(!cellLs[i].render())animating = true;
+	for(var i in cellLs)if(!cellLs[i].shadow())animating = true;
+	for(var i in cellLs)cellLs[i].render();
 	for(var i in markerLs)markerLs[i].render();
 	for(var i in fillLs){
 		var f = fillLs[i];
