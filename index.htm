@@ -94,7 +94,9 @@ var drawPath = function(cell,i,offset){
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var hexRad = 48;
+var gw = 5;
+var gh = 5;
+var hexRad = Math.min(ww,wh)/Math.max(gw+4,gh+4);
 var minDepth = 3;
 var markerPairs = 5;
 var cellLs;
