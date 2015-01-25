@@ -454,9 +454,8 @@ window.onresize = function(){ // auto-resize canvas to window
 	ww = canvas.width  = window.innerWidth;
 	wh = canvas.height = window.innerHeight;
 
-	var padding = 32;
-	var scaleX = (ww-padding)/width;
-	var scaleY = (wh-padding)/height;
+	var scaleX = ww/(width*1.2);
+	var scaleY = wh/(height*1.2);
 	scale = Math.min(scaleX,scaleY);
 
 	requestAnimationFrame(render);
