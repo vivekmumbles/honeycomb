@@ -471,7 +471,7 @@ canvas.addEventListener("touchmove",function(e){
 	e.preventDefault();
 	var tch = e.changedTouches[0];
 	var move = tch.pageX-tchMove[0];
-	if(Math.abs(move)>scale/2){
+	if(Math.abs(move)>scale){
 		if(move<0)minCell.rotateCCW();
 		else if(move>0)minCell.rotateCW();
 		tchMove = [tch.pageX,tch.pageY];
