@@ -49,19 +49,12 @@ var goldenAngle = 0.381966;
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var hexRad = 32;
+var hexRad = 48;
 var minDepth = 3;
 var cellLs;
 var markerLs;
 
 var cell = function(){
-
-/*
-	4 / \ 5
-	3 | | 0
-	2 \ / 1
-*/
-
 	this.path = []; // 0-1 | 2-3 | 4-5
 	this.used = [false,false,false,false,false,false];
 	this.adjacent = [null,null,null,null,null,null]; // E SE SW W NW NE
@@ -71,9 +64,9 @@ var cell = function(){
 	this.x;
 	this.y;
 
-	// QSTN: should this return a bool when its done interpolating?
 	this.render = function(){
-		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.01;
+		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
+		if(Math.abs(this.goalRotation-this.rotation)<0.001)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
@@ -108,6 +101,8 @@ var cell = function(){
 		}
 
 		gfx.restore();
+		
+		return this.rotation === this.goalRotation;
 	};
 
 	this.rotateCW  = function(){++this.goalRotation;};
@@ -281,17 +276,18 @@ function drawHex(x,y,r){
 };
 
 function render(){
-	requestAnimationFrame(render);
 	var currentTick = new Date().getTime()-tickOffset;
-	elapsed = currentTick-tick;
+	elapsed = Math.min(currentTick-tick,5);
 	tick = currentTick;
 
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
 	gfx.save();
 
-	for(var i in cellLs)cellLs[i].render();
+	var animating = false;
+	for(var i in cellLs)if(!cellLs[i].render())animating = true;
 	for(var i in markerLs)markerLs[i].render();
+	if(animating)requestAnimationFrame(render);
 
 	gfx.restore();
 };
@@ -322,9 +318,12 @@ canvas.addEventListener("mouseup",function(e){
 			minDist = sqDist;
 			minCell = c;
 		}
-	}
+	}if(minDist>hexRad*hexRad)return;
 
-	minCell.rotateCW();
+	switch(e.which){
+		case 1:minCell.rotateCCW();break;
+		case 3:minCell.rotateCW();break;
+	}
 
 	render(); // XXX: remove if theres continuous animation
 });
