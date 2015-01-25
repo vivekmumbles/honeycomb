@@ -47,6 +47,21 @@ function hsv(h,s,v){
 
 var goldenAngle = 0.381966;
 
+function textWidth(string,size,spacing){
+	gfx.font = "800 "+size*1.37+"px arial";
+	return gfx.measureText(string).width + (spacing * (string.length-1));
+}
+
+function text(string,x,y,size,spacing){
+	gfx.textBaseline = "alphabetic";
+	gfx.font = "800 "+size*1.37+"px arial";
+	for(var i=0;i<string.length;++i){
+
+		gfx.fillText(string.charAt(i),x,y+size);
+		x += gfx.measureText(string.charAt(i)).width+spacing;
+	}
+}
+
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
@@ -279,8 +294,8 @@ function generateGrid(){
 	}
 
 	// randomize rotations
-//	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
-	evalPaths(); // DELETE
+	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
+//	evalPaths(); // DELETE
 };
 
 generateGrid(); // TODO: move this to an appropriate spot
@@ -355,24 +370,31 @@ function render(){
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
 
-	// grid background | XXX: this is only valid if the grid center is the center of a hex
 	gfx.save();
-	gfx.translate(ww/2,wh/2);
-
-	var r = 14;//must be even
-	for(var i=0;i<=r;++i)for(var j=0;j<=r;++j){
-		var x = (-(j-Math.floor(r/2))+2*i-2*Math.floor(r/2))*hexRad/2*sq3;
-		var y = (1.5*hexRad*j)-1.5*hexRad*Math.floor(r/2);
-		rgb(0.85,0.85,0.85);
-		drawHex(x,y,hexRad-2);
-		rgb(0.88,0.88,0.88);
-		drawHex(x,y,hexRad-8);
-	}
+	gfx.shadowColor = rgb(0.4,0.4,0.4);
+	gfx.shadowBlur = 8;
+	var w = textWidth("Honeycomb",36,-3);
+	text("Honeycomb",ww/2-w/2,wh/2-256,36,-3);
+	w = textWidth("Team JVL",18,-2);
+	text("Team JVL",ww/2-w/2,wh/2+220,18,-2);
 	gfx.restore();
 
+	// grid background | XXX: this is only valid if the grid center is the center of a hex
+//	gfx.save();
+//	gfx.translate(ww/2,wh/2);
+//
+//	var r = 14;//must be even
+//	for(var i=0;i<=r;++i)for(var j=0;j<=r;++j){
+//		var x = (-(j-Math.floor(r/2))+2*i-2*Math.floor(r/2))*hexRad/2*sq3;
+//		var y = (1.5*hexRad*j)-1.5*hexRad*Math.floor(r/2);
+//		rgb(0.85,0.85,0.85);
+//		drawHex(x,y,hexRad-2);
+//		rgb(0.88,0.88,0.88);
+//		drawHex(x,y,hexRad-8);
+//	}
+//	gfx.restore();
+
 	gfx.save();
-//	gfx.translate(-ww/2,-wh/2);
-//	gfx.scale(2,2);
 	var animating = false;
 	for(var i in cellLs)if(!cellLs[i].shadow())animating = true;
 	for(var i in cellLs)cellLs[i].render();
