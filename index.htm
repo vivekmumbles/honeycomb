@@ -450,7 +450,9 @@ canvas.addEventListener("touchstart",function(e){
 
     var tch = e.changedTouches[0];
 
-    alert(tch.screenX+", "+tch.screenY);
+    // alert(tch.screenX+", "+tch.screenY);
+
+    var tchStart = [tch.screenX,tch.screenY];
 
     // var tchs = e.changedTouches;
     // var x = y = 0;
@@ -462,15 +464,18 @@ canvas.addEventListener("touchstart",function(e){
 
 canvas.addEventListener("touchend",function(e){
     e.preventDefault();
-    alert("got here");
-    var tchs = e.changedTouches;
-    var x = y = 0;
-    for(var i=0;i<tchs.length;++i){
-	x += tchs[i].screenX;
-	// y += tchs[i].screenY;
-    }var move = x/tchs.length - tchStart[0];
+    // alert("got here");
+    // var tchs = e.changedTouches;
+    // var x = y = 0;
+    // for(var i=0;i<tchs.length;++i){
+    // 	x += tchs[i].screenX;
+    // 	// y += tchs[i].screenY;
+    // }var move = x/tchs.length - tchStart[0];
 
-    alert(move);
+    // alert(move);
+    var tch = e.changedTouches[0];
+    var tchEnd = [tch.screenX,tch.screeny];
+    var move = tchEnd[0] - tchStart[0];
 
     var minDist = Infinity;
     var minCell = null;
