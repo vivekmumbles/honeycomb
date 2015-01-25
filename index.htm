@@ -480,12 +480,13 @@ canvas.addEventListener("touchmove",function(e){
 
 canvas.addEventListener("touchend",function(e){
     e.preventDefault();
+    console.log("here");
     var tch = e.changedTouches[0];
     var dist = Math.sqrt(Math.pow((tch.pageX-tchStart[0]),2)+Math.pow((tch.pageY-tchStart[1]),2))
     console.log("dist = "+dist);
     if(dist<scale){
 	var minDist = Infinity;
-	minCell = null;
+	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
 		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
