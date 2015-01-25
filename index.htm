@@ -443,52 +443,56 @@ document.addEventListener("keyup",function(e){
 
 //==  TOUCH CODE  ============================================================//
 
-// var tchStart;
-// canvas.addEventListener("touchstart",function(e){
-//     e.preventDefault();
-//     // alert("got here");
-//     var tchs = e.changedTouches;
-//     var x = y = 0;
-//     for(var i=0;i<tchs.length;++i){
-// 	x += tchs[i].screenX;
-// 	y += tchs[i].screenY;
-//     }var tchStart = [x/tchs.length,y/tchs.length];
-// },false);
+var tchStart;
+canvas.addEventListener("touchstart",function(e){
+    e.preventDefault();
+    // alert("got here");
 
-// canvas.addEventListener("touchend",function(e){
-//     e.preventDefault();
-//     alert("got here");
-//     var tchs = e.changedTouches;
-//     var x = y = 0;
-//     for(var i=0;i<tchs.length;++i){
-// 	x += tchs[i].screenX;
-// 	// y += tchs[i].screenY;
-//     }var move = x/tchs.length - tchStart[0];
+    var tch = e.changedTouches[0];
 
-//     alert(move);
+    alert(tch);
 
-//     var minDist = Infinity;
-//     var minCell = null;
-//     for(var i in cellLs){
-// 	var c = cellLs[i];
-// 	var x = c.x+ww/2-mouse.x;
-// 	var y = c.y+wh/2-mouse.y;
-// 	var sqDist = x*x+y*y;
-// 	if(sqDist<minDist){
-// 	    minDist = sqDist;
-// 	    minCell = c;
-// 	}
-//     }if(minDist>hexRad*hexRad)return;
+    // var tchs = e.changedTouches;
+    // var x = y = 0;
+    // for(var i=0;i<tchs.length;++i){
+    // 	x += tchs[i].screenX;
+    // 	y += tchs[i].screenY;
+    // }var tchStart = [x/tchs.length,y/tchs.length];
+},false);
 
-//     for(var i=0;i<Math.abs(move);i+=20){
-// 	if     (move<0) minCell.rotateCCW();
-// 	else if(move>0) minCell.rotateCW();
-//     }
-// },false);
+canvas.addEventListener("touchend",function(e){
+    e.preventDefault();
+    alert("got here");
+    var tchs = e.changedTouches;
+    var x = y = 0;
+    for(var i=0;i<tchs.length;++i){
+	x += tchs[i].screenX;
+	// y += tchs[i].screenY;
+    }var move = x/tchs.length - tchStart[0];
+
+    alert(move);
+
+    var minDist = Infinity;
+    var minCell = null;
+    for(var i in cellLs){
+	var c = cellLs[i];
+	var x = c.x+ww/2-mouse.x;
+	var y = c.y+wh/2-mouse.y;
+	var sqDist = x*x+y*y;
+	if(sqDist<minDist){
+	    minDist = sqDist;
+	    minCell = c;
+	}
+    }if(minDist>hexRad*hexRad)return;
+
+    for(var i=0;i<Math.abs(move);i+=20){
+	if     (move<0) minCell.rotateCCW();
+	else if(move>0) minCell.rotateCW();
+    }
+},false);
 
 // function touchHandler(event){
-// 	if(!modeTrophies)
-// 		event.preventDefault(); //allow touch scrolling in trophy mode
+// 	if(!modeTrophies) event.preventDefault(); //allow touch scrolling in trophy mode
 // 	var first   = event.changedTouches[0];
 // 	var id = 0;
 // 	if(gTouches[0] === null || gTouches[0] === first.identifier){
