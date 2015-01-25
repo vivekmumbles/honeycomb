@@ -344,11 +344,11 @@ canvas.addEventListener("touchstart", function(e){
     alert("fnhsdjlgsnl");
     var tchs = e.changedTouches;
     var x=y=0;
-    // for(var i=0;i<touches.length;++i){
-    // 	x += tchs[i].screenX;
-    // 	y += tchs[i].screenY;
-    // }tchStart = [x/tchs.length,y/tchs.length]
-    // alert("touch start");
+    for(var i=0;i<touches.length;++i){
+    	x += tchs[i].screenX;
+    	y += tchs[i].screenY;
+    }tchStart = [x/tchs.length,y/tchs.length]
+    alert("touch start");
   }, false);
 
 canvas.addEventListener("touchend", function(e){
