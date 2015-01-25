@@ -337,6 +337,16 @@ canvas.addEventListener("mouseup",function(e){
 	render(); // XXX: remove if theres continuous animation
 });
 
+// TOUCH CODE
+
+var tchStart;
+canvas.addEventListener("touchstart", function(e){
+    tchStart = e.changedTouches;
+    alert(tchStart);
+}, false);
+
+
+
 //==  PROGRAM ENTRY + MISC  ==================================================//
 
 canvas.oncontextmenu = function(){return false;}; // prevent right click menu
