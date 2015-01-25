@@ -51,7 +51,7 @@ var goldenAngle = 0.381966;
 
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
-var minDepth = 3;
+var minDepth = 4;
 var cellLs;
 var markerLs;
 var fillLs;
@@ -167,10 +167,10 @@ var marker = function(attach,side,color){
 function generateGrid(){
 	var preGrid = [
 		[1,1,1,0,0],
-		[0,1,1,0,0],
+		[1,1,1,1,0],
 		[1,1,0,1,1],
 		[0,1,1,1,1],
-		[0,0,1,0,1],
+		[0,0,1,1,1],
 	];
 
 	var markerPairs = 3;
@@ -287,6 +287,9 @@ function generateGrid(){
 		shuffle(indicies);
 		c.path = c.path.concat(indicies);
 	}
+
+	// randomize rotations
+	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
 };
 
 generateGrid(); // TODO: move this to an appropriate spot
