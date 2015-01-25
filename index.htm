@@ -414,7 +414,7 @@ function render(){
 
 //==  INPUT HANDLING  ========================================================//
 
-var tchStart,tchMove,minCell;
+var tchStart,tchMove,tchCell;
 
 function getMousePos(evt){
 	var rect = canvas.getBoundingClientRect();
@@ -454,7 +454,7 @@ canvas.addEventListener("touchstart",function(e){
 	tchStart = [tch.pageX,tch.pageY];
 	tchMove = tchStart;
 	var minDist = Infinity;
-	minCell = null;
+	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
 		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
@@ -465,6 +465,7 @@ canvas.addEventListener("touchstart",function(e){
 			minCell = c;
 		}
 	}if(minDist>scale*scale)return;
+	tchCell = minCell;
 },false);
 
 canvas.addEventListener("touchmove",function(e){
@@ -472,8 +473,8 @@ canvas.addEventListener("touchmove",function(e){
 	var tch = e.changedTouches[0];
 	var move = tch.pageX-tchMove[0];
 	if(Math.abs(move)>scale){
-		if(move<0)minCell.rotateCCW();
-		else if(move>0)minCell.rotateCW();
+		if(move<0)tchCell.rotateCCW();
+		else if(move>0)tchCell.rotateCW();
 		tchMove = [tch.pageX,tch.pageY];
 	}requestEval();
 },false);
