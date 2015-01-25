@@ -450,7 +450,7 @@ canvas.addEventListener("touchstart",function(e){
 
     var tch = e.changedTouches[0];
 
-    alert("start: "+tch.screenX+", "+tch.screenY);
+    // alert("start: "+tch.screenX+", "+tch.screenY);
 
     tchStart = [tch.screenX,tch.screenY];
 
@@ -474,12 +474,12 @@ canvas.addEventListener("touchend",function(e){
 
     // alert(move);
     var tch = e.changedTouches[0];
-    alert("end: "+tch.screenX+", "+tch.screenY);
+   //  alert("end: "+tch.screenX+", "+tch.screenY);
     var tchEnd = [tch.screenX,tch.screeny];
     console.log("tchStart = "+tchStart);
     var move = tchEnd[0] - tchStart[0];
     console.log(move);
-    alert("move="+move);
+    // alert("move="+move);
 
     alert(move);
 
