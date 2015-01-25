@@ -52,7 +52,7 @@ var goldenAngle = 0.381966;
 
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
-var minDepth = 3;
+var minDepth = 0;
 var markerPairs = 30;
 var cellLs;
 var edgeCellLs;
@@ -152,11 +152,13 @@ var marker = function(attach,side,color){
 
 function generateGrid(){
 	var preGrid = [
-		[1,1,1,0,0],
-		[1,1,1,1,0],
-		[1,1,0,1,1],
-		[0,1,1,1,1],
-		[0,0,1,1,1],
+        [1,1,1,0,0],
+        [1,1,1,1,0],
+        [1,1,0,1,1],
+        [0,1,1,1,1],
+        [0,0,1,1,1],
+        [1,1,1,0,0],
+        [1,1,1,1,0],
 	];
 
 	// initializes cells, grid, and cellLs
@@ -199,13 +201,14 @@ function generateGrid(){
 
 	// initialize markers
 	markerLs = [];
+    console.log(edgeCellLs.length)
 	shuffle(edgeCellLs);
 	var markers = 0;
-	fulllist: for(var i in edgeCellLs) {
+	fullList: for(var i in edgeCellLs) {
         var c = edgeCellLs[i];
         var dir, m0, m1;
         for (var k = 0; k < 6; k++) {
-            if (c.adjacent[k] = !null)
+            if ((c.adjacent[k] != null) || (c.markers[k] != null))
                 continue;
             var dir = k;
             m0 = new marker(c, dir, markers * goldenAngle + 0.3);
@@ -248,7 +251,7 @@ function generateGrid(){
                     } else {
                         destCell = fromCell;
                         destDir = adjLs[a];
-                        m1 = new marker(destCell, destDir, i * goldenAngle + 0.3);
+                        m1 = new marker(destCell, destDir, markers * goldenAngle + 0.3);
                         destCell.markers[adjLs[a]] = m1;
                         return true;
                     }
@@ -267,7 +270,7 @@ function generateGrid(){
             markerLs.push(m1);
             markers++;
             if (markers === markerPairs)
-                break fulllist;
+                break fullList;
         }
     }
 
