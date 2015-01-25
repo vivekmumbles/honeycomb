@@ -1,4 +1,5 @@
 <!DOCTYPE html><html><head><title>Torxion</title><meta charset="UTF-8">
+<<<<<<< HEAD
 <style>*{position:absolute;margin:0px;}</style>
 <body><script type="text/javascript">
 
@@ -7,22 +8,112 @@
                 / // / __ \/ |/ / __/\ \/ / ___/ __ \/  |/  / _ )
                / _  / /_/ /    / _/   \  / /__/ /_/ / /|_/ / _  |
               /_//_/\____/_/|_/___/   /_/\___/\____/_/  /_/____/ 
+=======
+<style>
+*{position:absolute;margin:0px;}
+<!-- body{position:absolute;margin:0px;} -->
+<!-- #menu{position:absolute; -->
+<!-- border-right: 10px solid; -->
+<!-- border-bottom: 10px solid; -->
+<!-- border-radius: 10px; -->
+<!-- background-color: rgba(255,255,255,.2); -->
+<!-- border-color: rgba(255,255,255,.2); -->
+<!-- } -->
+<!-- #menu>ul{list-style-type:none;} -->
+<!-- li{font-family: Arial;font-size:64px;font-weight:900;margin-bottom:-15px;} -->
+<!-- #easy:hover{color:green;} -->
+<!-- #med:hover{color:gold;} -->
+<!-- #hard:hover{color:firebrick;} -->
+<!-- #shuf:hover{color:dodgerblue;} -->
+<!-- #rst:hover{color:darkorange;} -->
+<!-- a{color:inherit;text-decoration:none;letter-spacing:-4px; -->
+<!-- } -->
+<!-- .arrow-right { -->
+<!-- 	width: 0;  -->
+<!-- 	height: 0;  -->
+<!-- 	border-top: 15px solid transparent; -->
+<!-- 	border-bottom: 15px solid transparent; -->
+<!-- 	border-left: 15px solid black; -->
+<!-- } -->
+<!-- .arrow-right:hover {border-left:15px solid lightsteelblue;} -->
+<!-- .arrow-left { -->
+<!-- 	width: 40%;  -->
+<!-- 	height: 0;  -->
+<!-- 	border-top: 15px solid transparent; -->
+<!-- 	border-bottom: 15px solid transparent;  -->
+<!-- 	border-right:15px solid black;  -->
+<!-- } -->
+<!-- .arrow-left:hover {border-right:15px solid lightsteelblue; -->
+
+<!-- } -->
+</style>
+<body>
+
+<canvas id="canvas" style="z-index: 1">Your browser does not support HTML5 canvas</canvas>
+
+<!-- <div id="menu" style="z-index: 2"> -->
+<!-- <ul id="list"> -->
+<!--     <li id="logo" class="li"><a href="#">torsion</a></li> -->
+<!--     <li id="easy" class="li"><a href="#">easy</a></li> -->
+<!--     <li id="med" class="li"><a href="#">medium</a></li> -->
+<!--     <li id="hard" class="li"><a href="#">hard</a></li> -->
+<!--     <li id="shuf" class="li"><a href="#">shuffle</a></li> -->
+<!--     <li id="rst" class="li"><a href="#">reset</a></li> -->
+<!-- </ul> -->
+<!-- <a href="#"><div id="arrow" class="arrow-left"></div></a> -->
+<!-- </div> -->
+
+<script type="text/javascript">
+
+/*+==========================================================================+*\
+                      __________  ___  _  __________  _  __
+                     /_  __/ __ \/ _ \| |/_/  _/ __ \/ |/ /
+                      / / / /_/ / , _ >  <_/ // /_/ /    / 
+                     /_/  \____/_/|_/_/|_/___/\____/_/|_/  
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 
 \*+==========================================================================+*/
 
 "use strict"
 
+<<<<<<< HEAD
 var canvas = document.createElement("canvas");
 var gfx = canvas.getContext("2d");
 var ww = canvas.width  = window.innerWidth;
 var wh = canvas.height = window.innerHeight;
 var tick=0,tickOffset=0,elapsed=0;
+=======
+// menu code
+
+// var arrow = document.getElementById("arrow");
+// arrow.onclick = function(e){
+//     var list = document.getElementById("list");
+//     if(arrow.className==="arrow-left"){
+// 	list.style.marginLeft = "-100%";
+// 	arrow.className = "arrow-right";
+//     }
+//     else if(arrow.className==="arrow-right"){
+// 	list.style.marginLeft = "0";
+// 	arrow.className = "arrow-left";
+//     }
+// }
+
+// end menu code
+
+var canvas = document.getElementById("canvas");
+var gfx = canvas.getContext("2d");
+var ww,wh,tick=0,tickOffset=0,elapsed=0;
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 function rfloat(x){return Math.random()*x;};
 function rInt(x){return Math.floor(Math.random()*x);};
 function shuffle(ls){return ls.sort(function(){return 0.5-Math.random();});}
 Number.prototype.mod = function(n){return((this%n)+n)%n;};
 
+<<<<<<< HEAD
 //==  MISC RENDERING  ========================================================//
+=======
+//==  RENDERING  =============================================================//
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 
 function rgb(r,g,b){return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 function rgba(r,g,b,a){return gfx.fillStyle=gfx.strokeStyle="rgba("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+","+a+")";};
@@ -45,12 +136,17 @@ function hsv(h,s,v){
 	}return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*(1-r))+","+Math.floor(255*(1-g))+","+Math.floor(255*(1-b))+")";
 }
 
+<<<<<<< HEAD
+=======
+var goldenAngle = 0.381966;
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 function hsva(h,s,v,a){
 	var s = hsv(h,s,v);
 	s = s.substring(0,3)+"a"+s.substring(3,s.length-1);
 	return gfx.fillStyle=gfx.strokeStyle=s+","+a+")";
 }
 
+<<<<<<< HEAD
 var goldenAngle = 0.381966;
 
 function textWidth(string,size,spacing){
@@ -79,6 +175,22 @@ var markerLs;
 var fillLs;
 var rotating = false;
 var fading = false;
+=======
+function drawHex(x,y,r){
+	gfx.save();
+	gfx.translate(x,y);
+	gfx.beginPath();
+	gfx.moveTo(0,r);
+	gfx.lineTo(r/2*sq3,r/2);
+	gfx.lineTo(r/2*sq3,-r/2);
+	gfx.lineTo(0,-r);
+	gfx.lineTo(-r/2*sq3,-r/2);
+	gfx.lineTo(-r/2*sq3,r/2);
+	gfx.lineTo(0,r);
+	gfx.fill();
+	gfx.restore();
+};
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 
 var drawPath = function(cell,i,offset){
 	if(offset === undefined)offset = 0;
@@ -86,6 +198,7 @@ var drawPath = function(cell,i,offset){
 	var p0 = Math.min(cell.path[i],cell.path[i+1]);
 	var p1 = Math.max(cell.path[i],cell.path[i+1]);
 	switch(p0*10+p1){
+<<<<<<< HEAD
 		case  1:gfx.arc(hexRad/2*sq3,hexRad/2,hexRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
 		case  2:gfx.arc(hexRad/2*sq3,hexRad*1.5,hexRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
 		case  3:gfx.moveTo(hexRad/2*sq3-offset,0);gfx.lineTo(-hexRad/2*sq3+offset,0);break;
@@ -105,6 +218,41 @@ var drawPath = function(cell,i,offset){
 }
 
 var cell = function(){
+=======
+		case  1:gfx.arc(baselineRad/2*sq3,baselineRad/2,baselineRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
+		case  2:gfx.arc(baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
+		case  3:gfx.moveTo(baselineRad/2*sq3-offset,0);gfx.lineTo(-baselineRad/2*sq3+offset,0);break;
+		case  4:gfx.arc(baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/2*Math.PI+offset,5/6*Math.PI-offset);break;
+		case  5:gfx.arc(baselineRad/2*sq3,-baselineRad/2,baselineRad/2,1/2*Math.PI+offset,7/6*Math.PI-offset);break;
+		case 12:gfx.arc(0,baselineRad,baselineRad/2,7/6*Math.PI+offset,11/6*Math.PI-offset);break;
+		case 13:gfx.arc(-baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,3/2*Math.PI+offset,11/6*Math.PI-offset);break;
+		case 14:gfx.moveTo((baselineRad-offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo(-(baselineRad+offset)/4*sq3,-(baselineRad+offset)*3/4);break;
+		case 15:gfx.arc(baselineRad*sq3,0,baselineRad*1.5,5/6*Math.PI+offset,7/6*Math.PI-offset);break;
+		case 23:gfx.arc(-baselineRad/2*sq3,baselineRad/2,baselineRad/2,3/2*Math.PI+offset,1/6*Math.PI-offset);break;
+		case 24:gfx.arc(-baselineRad*sq3,0,baselineRad*1.5,-1/6*Math.PI+offset,1/6*Math.PI-offset);break;
+		case 25:gfx.moveTo(-(baselineRad+offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo((baselineRad-offset)/4*sq3,-(baselineRad+offset)*3/4);break;
+		case 34:gfx.arc(-baselineRad/2*sq3,-baselineRad/2,baselineRad/2,11/6*Math.PI+offset,1/2*Math.PI-offset);break;
+		case 35:gfx.arc(-baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/6*Math.PI+offset,1/2*Math.PI-offset);break;
+		case 45:gfx.arc(0,-baselineRad,baselineRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
+	}gfx.stroke();
+}
+
+//==  GRID GENERATION  =======================================================//
+
+var sq3 = Math.sqrt(3);
+var baselineRad = 48;
+var cellLs;
+var markerLs;
+var fillLs = [];
+var fading = false;
+var evaluate = false;
+var lastEvalReqTick = -1;
+var cellCtr = 0;
+var width,height,scale;
+
+var cell = function(){
+	this.id = ++cellCtr+".";
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	this.path = []; // 0-1 | 2-3 | 4-5
 	this.used = [false,false,false,false,false,false];
 	this.adjacent = [null,null,null,null,null,null]; // E SE SW W NW NE
@@ -116,12 +264,21 @@ var cell = function(){
 
 	this.shadow = function(){
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
+<<<<<<< HEAD
 		if(Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
 		gfx.shadowBlur = 8;
 		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,hexRad-2);
+=======
+		if(this.goalRotation !== this.rotation && Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
+		gfx.save();
+		gfx.translate(this.x,this.y);
+		gfx.rotate(this.rotation*Math.PI/3);
+		gfx.shadowBlur = 8;
+		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,baselineRad-2);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		gfx.restore();
 		return this.rotation === this.goalRotation;
 	}
@@ -132,9 +289,15 @@ var cell = function(){
 		}
 
 		gfx.save();
+<<<<<<< HEAD
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
 		rgb(0.6,0.6,0.6);drawHex(0,0,hexRad-8);
+=======
+		gfx.translate(this.x,this.y);
+		gfx.rotate(this.rotation*Math.PI/3);
+		rgb(0.6,0.6,0.6);drawHex(0,0,baselineRad-8);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		for(var i=0;i<this.path.length;i+=2){
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
 			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i,-0.02);
@@ -143,7 +306,11 @@ var cell = function(){
 
 	this.highlight = function(){
 		gfx.save();
+<<<<<<< HEAD
 		gfx.translate(this.x+ww/2,this.y+wh/2);
+=======
+		gfx.translate(this.x,this.y);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		drawPath(this,0);
 		gfx.restore();
 	};
@@ -162,21 +329,31 @@ var marker = function(attach,side,color){
 
 	this.render = function(){
 		gfx.save();
+<<<<<<< HEAD
 		gfx.translate(this.attachedTo.x+ww/2,this.attachedTo.y+wh/2);
+=======
+		gfx.translate(this.attachedTo.x,this.attachedTo.y);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		var r = this.side*1/3*Math.PI;
 		gfx.shadowColor = rgb(0.1,0.1,0.1);
 		gfx.shadowBlur = 8;
 		gfx.lineWidth = 4;
 		hsv(this.color,1,1);
 		gfx.beginPath();
+<<<<<<< HEAD
 		gfx.moveTo(Math.cos(r)*hexRad*0.92,Math.sin(r)*hexRad*0.92);
 		gfx.lineTo(Math.cos(r)*hexRad*1.12,Math.sin(r)*hexRad*1.12);
+=======
+		gfx.moveTo(Math.cos(r)*baselineRad*0.92,Math.sin(r)*baselineRad*0.92);
+		gfx.lineTo(Math.cos(r)*baselineRad*1.12,Math.sin(r)*baselineRad*1.12);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		gfx.stroke();
 
 		gfx.restore();
 	};
 };
 
+<<<<<<< HEAD
 function generateGrid(){
 	var preGrid = [
 		[1,1,1,0,0],
@@ -186,6 +363,9 @@ function generateGrid(){
 		[0,0,1,1,1],
 	];
 
+=======
+function generateGrid(minDepth,markerPairs,preGrid){
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	// initializes cells, grid, and cellLs
 	cellLs = [];
 	for(var i=0;i<preGrid.length;++i)
@@ -204,11 +384,21 @@ function generateGrid(){
 	});
 
 	// initialize pointers and coordinates
+<<<<<<< HEAD
 	for(var i=0;i<grid.length;++i)
 	for(var j=0;j<grid[i].length;++j)
 	if(grid[i][j] !== null){
 		grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*hexRad/2*sq3;
 		grid[i][j].y = (1.5*hexRad*j)-1.5*hexRad*Math.floor(grid.length/2);
+=======
+	var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+	for(var i=0;i<grid.length;++i)
+	for(var j=0;j<grid[i].length;++j)
+	if(grid[i][j] !== null){
+		var x = grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*baselineRad/2*sq3;
+		var y = grid[i][j].y = (1.5*baselineRad*j)-1.5*baselineRad*Math.floor(grid.length/2);
+		if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		if(i<grid.length-1)                     grid[i][j].adjacent[0]=grid[i+1][j  ];
 		if(i<grid.length-1&&j<grid[i].length-1) grid[i][j].adjacent[1]=grid[i+1][j+1];
 		if(j<grid[i].length-1)                  grid[i][j].adjacent[2]=grid[i  ][j+1];
@@ -217,6 +407,17 @@ function generateGrid(){
 		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
 	}
 
+<<<<<<< HEAD
+=======
+	minX -= baselineRad/2*sq3;
+	maxX += baselineRad/2*sq3;
+	minY -= baselineRad;
+	maxY += baselineRad;
+
+	width  = (maxX-minX)/baselineRad;
+	height = (maxY-minY)/baselineRad;
+
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	// initialize markers
 	markerLs = [];
 	for(var i=0;i<markerPairs;++i){
@@ -301,6 +502,7 @@ function generateGrid(){
 
 	// randomize rotations
 	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
+<<<<<<< HEAD
 //	evalPaths(); // DELETE
 	rotating = true;
 };
@@ -317,6 +519,25 @@ function evalPaths(){
 		var tracedPath = [];
 		var recurse = function(fromCell,fromSide,originMkr){
 			if(fromCell.rotation !== fromCell.goalRotation)return false;
+=======
+	requestEval();
+};
+
+function requestEval(){
+	if(lastEvalReqTick === tick)return;
+	lastEvalReqTick = tick;
+	evaluate = true;
+	requestAnimationFrame(render);
+}
+
+function evalPaths(){
+	for(var i=0;i<fillLs.length;++i)fillLs[i][3] = 0; // fade everything out, gets set back to true if its detected
+	for(var i=0;i<markerLs.length;i+=2){
+		// returns true=found pair,save path | false=found null,ignore path
+		var tracedPath = [];
+		var hash = "";
+		var recurse = function(fromCell,fromSide,originMkr){
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 			fromSide = (fromSide-fromCell.goalRotation).mod(6);
 			var toSide;
 			for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
@@ -332,6 +553,10 @@ function evalPaths(){
 				c.x = fromCell.x;
 				c.y = fromCell.y;
 				tracedPath.push(c);
+<<<<<<< HEAD
+=======
+				hash += fromCell.id;
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 			}
 
 			if(fromCell.adjacent[toSide] === null){
@@ -350,6 +575,7 @@ function evalPaths(){
 
 		var m = markerLs[i];
 		recurse(m.attachedTo,m.side,m);
+<<<<<<< HEAD
 		if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add animation data to this structure
 	}
 };
@@ -368,12 +594,29 @@ function drawHex(x,y,r){
 	gfx.fill();
 	gfx.restore();
 };
+=======
+		if(tracedPath.length > 0){
+			var hashFound = false;
+			for(var q in fillLs){
+				var f = fillLs[q];
+				if(f[4] !== hash)continue;
+				hashFound = true;
+				f[3] = 1;
+				break;
+			}if(!hashFound)fillLs.push([m.color,tracedPath,0,1,hash]);
+		}
+	}
+};
+
+//==  MAIN LOOP  =============================================================//
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 
 function render(){
 	var currentTick = new Date().getTime()-tickOffset;
 	elapsed = Math.min(currentTick-tick,5);
 	tick = currentTick;
 
+<<<<<<< HEAD
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
 
@@ -402,12 +645,27 @@ function render(){
 	gfx.restore();
 
 	gfx.save();
+=======
+	if(evaluate){
+		evaluate = false;
+		evalPaths();
+	}
+
+	rgb(0.9,0.9,0.9);
+	gfx.fillRect(0,0,ww,wh);
+	gfx.save();
+
+	gfx.translate(ww/2,wh/2);
+	gfx.scale(scale/baselineRad,scale/baselineRad);
+
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	var animating = false;
 	for(var i in cellLs)if(!cellLs[i].shadow())animating = true;
 	for(var i in cellLs)cellLs[i].render();
 	for(var i in markerLs)markerLs[i].render();
 	for(var i in fillLs){
 		var f = fillLs[i];
+<<<<<<< HEAD
 		gfx.shadowColor = hsv(f[0],1,1);
 		gfx.shadowBlur = 4;
 		gfx.lineWidth = 4;
@@ -420,16 +678,32 @@ function render(){
 		evalPaths();
 	}
 	
+=======
+		f[2] += (f[3]-f[2])*elapsed*0.02;
+		if(f[2] !== f[3] && Math.abs(f[2]-f[3]) < 0.01)f[2] = f[3];
+		if(f[2] !== f[3])animating = true;
+		gfx.shadowColor = hsva(f[0],1,1,f[2]);
+		gfx.shadowBlur = 4;
+		gfx.lineWidth = 4;
+		for(var j in f[1])f[1][j].highlight();
+	}if(animating)requestAnimationFrame(render);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	gfx.restore();
 };
 
 //==  INPUT HANDLING  ========================================================//
 
+<<<<<<< HEAD
+=======
+var tchStart,tchMove,tchCell;
+
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 function getMousePos(evt){
 	var rect = canvas.getBoundingClientRect();
 	return{x:evt.clientX-rect.left,y:evt.clientY-rect.top};
 };
 
+<<<<<<< HEAD
 //	canvas.addEventListener("mousedown",function(e){
 //		var mouse = getMousePos(e);
 //		requestAnimationFrame(render);
@@ -438,17 +712,27 @@ function getMousePos(evt){
 canvas.addEventListener("mouseup",function(e){
 	var mouse = getMousePos(e);
 
+=======
+canvas.addEventListener("mouseup",function(e){
+	var mouse = getMousePos(e);
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	var minDist = Infinity;
 	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
+<<<<<<< HEAD
 		var x = c.x+ww/2-mouse.x;
 		var y = c.y+wh/2-mouse.y;
+=======
+		var x = c.x*scale/baselineRad+ww/2-mouse.x;
+		var y = c.y*scale/baselineRad+wh/2-mouse.y;
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
 			minCell = c;
 		}
+<<<<<<< HEAD
 	}if(minDist>hexRad*hexRad)return;
 
 	switch(e.which){
@@ -457,15 +741,63 @@ canvas.addEventListener("mouseup",function(e){
 	}rotating = true;
 
 	evalPaths();
+=======
+	}if(minDist>scale*scale)return;
+	switch(e.which){
+		case 1:minCell.rotateCCW();break;
+		case 3:minCell.rotateCW();break;
+	}requestEval();
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 });
 
 document.addEventListener("keyup",function(e){
 	switch(e.keyCode){
+<<<<<<< HEAD
 		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;evalPaths();rotating=true;break; // R
 		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;evalPaths();rotating=true;break; // S
 	}
 },false);
 
+=======
+		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;requestEval();break; // R
+		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;requestEval();break; // S
+	}
+},false);
+
+canvas.addEventListener("touchstart",function(e){
+	// e.preventDefault();  // turns off clicking
+	var tch = e.changedTouches[0];
+	tchCell = null;
+	tchStart = [tch.pageX,tch.pageY];
+	tchMove = tchStart;
+	var minDist = Infinity;
+	var minCell = null;
+	for(var i in cellLs){
+		var c = cellLs[i];
+		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
+		var y = c.y*scale/baselineRad+wh/2-tchStart[1];
+		var sqDist = x*x+y*y;
+		if(sqDist<minDist){
+			minDist = sqDist;
+			minCell = c;
+		}
+	}if(minDist>scale*scale)return;
+	tchCell = minCell;
+},false);
+
+canvas.addEventListener("touchmove",function(e){
+	e.preventDefault();
+	if(tchCell === null)return;
+	var tch = e.changedTouches[0];
+	var move = tch.pageX-tchMove[0];
+	if(Math.abs(move)>scale){
+		if(move<0)tchCell.rotateCCW();
+		else if(move>0)tchCell.rotateCW();
+		tchMove = [tch.pageX,tch.pageY];
+	}requestEval();
+},false);
+
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 //==  PROGRAM ENTRY + MISC  ==================================================//
 
 canvas.oncontextmenu = function(){return false;}; // prevent right click menu
@@ -473,11 +805,29 @@ canvas.oncontextmenu = function(){return false;}; // prevent right click menu
 window.onresize = function(){ // auto-resize canvas to window
 	ww = canvas.width  = window.innerWidth;
 	wh = canvas.height = window.innerHeight;
+<<<<<<< HEAD
+=======
+
+	var scaleX = ww/(width*1.2);
+	var scaleY = wh/(height*1.2);
+	scale = Math.min(scaleX,scaleY);
+
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	requestAnimationFrame(render);
 };
 
 (function main(){
 	document.body.appendChild(canvas);
+<<<<<<< HEAD
+=======
+	var minDepth = 6;
+	var markerPairs = 7;
+	window.onresize();
+//	generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);
+	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
+//	generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);
+	window.onresize();
+>>>>>>> 2a2fce96b264285c2fd892b9ec085a0d37e6345e
 	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
