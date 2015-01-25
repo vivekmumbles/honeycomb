@@ -342,7 +342,6 @@ canvas.addEventListener("mouseup",function(e){
 var tchStart;
 canvas.addEventListener("touchstart", function(e){
     alert("fnhsdjlgsnl");
-    e.preventDefault();
     var tchs = e.changedTouches;
     var x=y=0;
     for(var i=0;i<touches.length;++i){
@@ -353,7 +352,7 @@ canvas.addEventListener("touchstart", function(e){
   }, false);
 
 canvas.addEventListener("touchend", function(e){
-    e.preventDefault();
+    alert("ghjfg");
     var tchs = e.changedTouches;
     var x=y=0;
     for(var i=0;i<tchs.length;++i){
