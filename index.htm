@@ -49,7 +49,7 @@ var goldenAngle = 0.381966;
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var hexRad = 32;
+var hexRad = 48;
 var minDepth = 3;
 var cellLs;
 var markerLs;
@@ -153,16 +153,10 @@ var marker = function(attach,side,color){
 		hsv(this.color,1,1);
 		var r = this.side*1/3*Math.PI;
 
-		gfx.lineWidth = 7;
+		gfx.lineWidth = 5;
 		gfx.beginPath();
-		gfx.moveTo(Math.cos(r)*hexRad*0.75,Math.sin(r)*hexRad*0.75);
-		gfx.lineTo(Math.cos(r)*hexRad*1.00,Math.sin(r)*hexRad*1.00);
-		gfx.stroke();
-
-		gfx.lineWidth = 19;
-		gfx.beginPath();
-		gfx.moveTo(Math.cos(r)*hexRad*1.04,Math.sin(r)*hexRad*1.04);
-		gfx.lineTo(Math.cos(r)*hexRad*0.90,Math.sin(r)*hexRad*0.90);
+		gfx.moveTo(Math.cos(r)*hexRad*0.92,Math.sin(r)*hexRad*0.92);
+		gfx.lineTo(Math.cos(r)*hexRad*1.12,Math.sin(r)*hexRad*1.12);
 		gfx.stroke();
 
 		gfx.restore();
@@ -172,10 +166,10 @@ var marker = function(attach,side,color){
 function generateGrid(){
 	var preGrid = [
 		[1,1,1,0,0],
-		[1,1,1,1,0],
+		[0,1,1,0,0],
 		[1,1,0,1,1],
 		[0,1,1,1,1],
-		[0,0,1,1,1],
+		[0,0,1,0,1],
 	];
 
 	var markerPairs = 3;
@@ -328,7 +322,7 @@ function render(){
 	for(var i in fillLs){
 		var f = fillLs[i];
 		hsv(f[0],1,1);
-		gfx.lineWidth = 7;
+		gfx.lineWidth = 5;
 		for(var j in f[1])f[1][j].highlight();
 	}
 
