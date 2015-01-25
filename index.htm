@@ -119,10 +119,7 @@ var cell = function(){
 
 	this.shadow = function(){
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
-		if(this.goalRotation !== this.rotation && Math.abs(this.goalRotation-this.rotation)<0.01){
-			this.rotation = this.goalRotation;
-			requestEval();
-		}
+		if(this.goalRotation !== this.rotation && Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
@@ -307,6 +304,7 @@ function generateGrid(){
 
 	// randomize rotations
 	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
+	requestEval();
 };
 
 generateGrid(); // TODO: move this to an appropriate spot
@@ -327,7 +325,6 @@ function evalPaths(){
 		var tracedPath = [];
 		var hash = "";
 		var recurse = function(fromCell,fromSide,originMkr){
-			if(fromCell.rotation !== fromCell.goalRotation)return false;
 			fromSide = (fromSide-fromCell.goalRotation).mod(6);
 			var toSide;
 			for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
@@ -364,13 +361,16 @@ function evalPaths(){
 		recurse(m.attachedTo,m.side,m);
 		if(tracedPath.length > 0){
 			var hashFound = false;
-			for(var i=0;i<fillLs.length;++i)if(fillLs[i][4] === hash){
+			for(var q in fillLs){
+				var f = fillLs[q];
+				if(f[4] !== hash)continue;
 				hashFound = true;
-				fillLs[i][3] = 1;
+				f[3] = 1;
+				break;
 			}if(!hashFound)fillLs.push([m.color,tracedPath,0,1,hash]);
-			else console.log("SUCCESS");
+			else console.log("FOUND HASH");
 		}
-	}
+	}console.log(markerLs.length);
 };
 
 function drawHex(x,y,r){
@@ -438,9 +438,7 @@ function render(){
 		gfx.shadowBlur = 4;
 		gfx.lineWidth = 4;
 		for(var j in f[1])f[1][j].highlight();
-	}fillLs = fillLs.filter(function(f){return f[3] === 1 || (f[3] === 0 && f[2] === 0);})
-
-	if(animating)requestAnimationFrame(render);
+	}if(animating)requestAnimationFrame(render);
 	
 	gfx.restore();
 };
