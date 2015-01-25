@@ -153,8 +153,6 @@ var drawPath = function(cell,i,offset){
 
 var sq3 = Math.sqrt(3);
 var baselineRad = 48;
-var minDepth = 3;
-var markerPairs = 5;
 var cellLs;
 var markerLs;
 var fillLs = [];
@@ -238,15 +236,7 @@ var marker = function(attach,side,color){
 	};
 };
 
-function generateGrid(){
-	var preGrid = [
-		[1,1,1,0,0],
-		[1,1,1,1,0],
-		[1,1,0,1,1],
-		[0,1,1,1,1],
-		[0,0,1,1,1],
-	];
-
+function generateGrid(minDepth,markerPairs,preGrid){
 	// initializes cells, grid, and cellLs
 	cellLs = [];
 	for(var i=0;i<preGrid.length;++i)
@@ -474,7 +464,7 @@ function render(){
 
 //==  INPUT HANDLING  ========================================================//
 
-var tchStart,tchMove,minCell;
+var tchStart,tchMove,tchCell;
 
 function getMousePos(evt){
 	var rect = canvas.getBoundingClientRect();
@@ -511,10 +501,11 @@ document.addEventListener("keyup",function(e){
 canvas.addEventListener("touchstart",function(e){
 	// e.preventDefault();  // turns off clicking
 	var tch = e.changedTouches[0];
+	tchCell = null;
 	tchStart = [tch.pageX,tch.pageY];
 	tchMove = tchStart;
 	var minDist = Infinity;
-	minCell = null;
+	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
 		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
@@ -525,15 +516,17 @@ canvas.addEventListener("touchstart",function(e){
 			minCell = c;
 		}
 	}if(minDist>scale*scale)return;
+	tchCell = minCell;
 },false);
 
 canvas.addEventListener("touchmove",function(e){
 	e.preventDefault();
+	if(tchCell === null)return;
 	var tch = e.changedTouches[0];
 	var move = tch.pageX-tchMove[0];
 	if(Math.abs(move)>scale){
-		if(move<0)minCell.rotateCCW();
-		else if(move>0)minCell.rotateCW();
+		if(move<0)tchCell.rotateCCW();
+		else if(move>0)tchCell.rotateCW();
 		tchMove = [tch.pageX,tch.pageY];
 	}requestEval();
 },false);
@@ -555,7 +548,13 @@ window.onresize = function(){ // auto-resize canvas to window
 
 (function main(){
 	document.body.appendChild(canvas);
-	window.onresize();generateGrid();window.onresize(); // hacky, i know
+	var minDepth = 6;
+	var markerPairs = 7;
+	window.onresize();
+//	generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);
+	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
+//	generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);
+	window.onresize();
 	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
