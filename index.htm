@@ -296,6 +296,50 @@ generateGrid(); // TODO: move this to an appropriate spot
 
 //==  MAIN LOOP  =============================================================//
 
+function evalPaths(){
+	fillLs = [];
+	for(var i=0;i<markerLs.length;i+=2){
+		// returns true=found pair,save path | false=found null,ignore path
+		var tracedPath = [];
+		var recurse = function(fromCell,fromSide,originMkr){
+			if(fromCell.rotation !== fromCell.goalRotation)return false;
+			fromSide = (fromSide-fromCell.goalRotation).mod(6);
+			var toSide;
+			for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
+				if(i%2 === 0)toSide = fromCell.path[i+1];
+				else toSide = fromCell.path[i-1];
+				break;
+			}toSide = (toSide+fromCell.goalRotation).mod(6);
+
+			var saveCell = function(){
+				var c = new cell();
+				c.path.push((fromSide+fromCell.goalRotation).mod(6));
+				c.path.push(toSide);
+				c.x = fromCell.x;
+				c.y = fromCell.y;
+				tracedPath.push(c);
+			}
+
+			if(fromCell.adjacent[toSide] === null){
+				if(fromCell.markers[toSide] === null)return false;
+				else if(fromCell.markers[toSide].partner === originMkr){
+					saveCell();
+					return true;
+				}else return false;
+			}else{
+				if(recurse(fromCell.adjacent[toSide],(toSide+3)%6,originMkr)){
+					saveCell();
+					return true;
+				}else return false;
+			}
+		};
+
+		var m = markerLs[i];
+		recurse(m.attachedTo,m.side,m);
+		if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add animation data to this structure
+	}
+};
+
 function drawHex(x,y,r){
 	gfx.save();
 	gfx.translate(x,y);
@@ -333,46 +377,8 @@ function render(){
 	if(animating)requestAnimationFrame(render);
 	else if(rotating){
 		rotating = false;
-		fillLs = [];
-		for(var i=0;i<markerLs.length;i+=2){
-			// returns true=found pair,save path | false=found null,ignore path
-			var tracedPath = [];
-			var recurse = function(fromCell,fromSide,originMkr){
-				fromSide = (fromSide-fromCell.rotation).mod(6);
-				var toSide;
-				for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
-					if(i%2 === 0)toSide = fromCell.path[i+1];
-					else toSide = fromCell.path[i-1];
-					break;
-				}toSide = (toSide+fromCell.rotation).mod(6);
-
-				var saveCell = function(){
-					var c = new cell();
-					c.path.push((fromSide+fromCell.rotation).mod(6));
-					c.path.push(toSide);
-					c.x = fromCell.x;
-					c.y = fromCell.y;
-					tracedPath.push(c);
-				}
-
-				if(fromCell.adjacent[toSide] === null){
-					if(fromCell.markers[toSide] === null)return false;
-					else if(fromCell.markers[toSide].partner === originMkr){
-						saveCell();
-						return true;
-					}else return false;
-				}else{
-					if(recurse(fromCell.adjacent[toSide],(toSide+3)%6,originMkr)){
-						saveCell();
-						return true;
-					}else return false;
-				}
-			};
-
-			var m = markerLs[i];
-			recurse(m.attachedTo,m.side,m);
-			if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add animation data to this structure
-		}
+		evalPaths();
+		requestAnimationFrame(render);
 	}
 	
 	gfx.restore();
@@ -411,6 +417,7 @@ canvas.addEventListener("mouseup",function(e){
 		case 3:minCell.rotateCW();break;
 	}rotating = true;
 
+	evalPaths();
 	render();
 });
 
