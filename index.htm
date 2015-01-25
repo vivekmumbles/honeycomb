@@ -52,8 +52,8 @@ var goldenAngle = 0.381966;
 
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
-var minDepth = 0;
-var markerPairs = 30;
+var minDepth = 1;
+var markerPairs = 25;
 var cellLs;
 var edgeCellLs;
 var markerLs;
@@ -154,10 +154,10 @@ function generateGrid(){
 	var preGrid = [
         [1,1,1,0,0],
         [1,1,1,1,0],
-        [1,1,0,1,1],
-        [0,1,1,1,1],
-        [0,0,1,1,1],
-        [1,1,1,0,0],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+        [1,1,1,1,0],
         [1,1,1,1,0],
 	];
 
@@ -193,26 +193,33 @@ function generateGrid(){
 		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
 		for(var k = 0; k<6; k++){
 			if(grid[i][j].adjacent[k] === null){
-				edgeCellLs.push(preGrid[i][j]);
+				edgeCellLs.push(grid[i][j]);
 				break;
 			}
 		}
 	}
 
 	// initialize markers
+    //TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO//TODO
 	markerLs = [];
     console.log(edgeCellLs.length)
 	shuffle(edgeCellLs);
 	var markers = 0;
 	fullList: for(var i in edgeCellLs) {
+        console.log("at " + i);
         var c = edgeCellLs[i];
         var dir, m0, m1;
         for (var k = 0; k < 6; k++) {
-            if ((c.adjacent[k] != null) || (c.markers[k] != null))
+            console.log("\t " + k + " Cell: " + c + " markers: " + markers);
+            if ((c.adjacent[k] != null) || (c.markers[k] != null)) {
+                console.log("caught");
                 continue;
+            }
+            console.log("check 1");
             var dir = k;
             m0 = new marker(c, dir, markers * goldenAngle + 0.3);
             c.markers[dir] = m0;
+            console.log("check 2");
             // returns true=found dest,keep path | false=not found dest,remove
             // path
             var destCell, destDir;
@@ -273,6 +280,7 @@ function generateGrid(){
                 break fullList;
         }
     }
+    console.log("Left loop" );
 
         // add rest of paths
         for (var i in cellLs) {
