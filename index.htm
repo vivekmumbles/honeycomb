@@ -50,7 +50,9 @@ var goldenAngle = 0.381966;
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var hexRad = 48;
+var gridWidth = 5;
+var gridHeight = 5;
+var hexRad = Math.min(ww,wh)/Math.max(gridWidth+4,gridHeight+4);
 var minDepth = 4;
 var cellLs;
 var markerLs;
