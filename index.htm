@@ -432,7 +432,7 @@ function getMousePos(evt){
 
 //	canvas.addEventListener("mousedown",function(e){
 //		var mouse = getMousePos(e);
-//		render();
+//		requestAnimationFrame(render);
 //	});
 
 canvas.addEventListener("mouseup",function(e){
@@ -473,12 +473,12 @@ canvas.oncontextmenu = function(){return false;}; // prevent right click menu
 window.onresize = function(){ // auto-resize canvas to window
 	ww = canvas.width  = window.innerWidth;
 	wh = canvas.height = window.innerHeight;
-	render();
+	requestAnimationFrame(render);
 };
 
 (function main(){
 	document.body.appendChild(canvas);
-	tickOffset=new Date().getTime();render();}
+	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
 </script></body></html>
