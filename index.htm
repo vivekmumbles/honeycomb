@@ -20,6 +20,7 @@ var tick=0,tickOffset=0,elapsed=0;
 function rfloat(x){return Math.random()*x;};
 function rInt(x){return Math.floor(Math.random()*x);};
 function shuffle(ls){return ls.sort(function(){return 0.5-Math.random();});}
+Number.prototype.mod = function(n){return((this%n)+n)%n;};
 
 //==  MISC RENDERING  ========================================================//
 
@@ -333,17 +334,18 @@ function render(){
 		for(var i=0;i<markerLs.length;i+=2){
 			// returns true=found pair,save path | false=found null,ignore path
 			var tracedPath = [];
-			var recurse = function(fromCell,fromSide,originMkr){ // TODO: TAKE INTO ACCOUNT ROTATION OF CELL
+			var recurse = function(fromCell,fromSide,originMkr){
+				fromSide = (fromSide-fromCell.rotation).mod(6);
 				var toSide;
 				for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
 					if(i%2 === 0)toSide = fromCell.path[i+1];
 					else toSide = fromCell.path[i-1];
 					break;
-				}
+				}toSide = (toSide+fromCell.rotation).mod(6);
 
 				var saveCell = function(){
 					var c = new cell();
-					c.path.push(fromSide);
+					c.path.push((fromSide+fromCell.rotation).mod(6));
 					c.path.push(toSide);
 					c.x = fromCell.x;
 					c.y = fromCell.y;
