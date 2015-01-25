@@ -49,11 +49,13 @@ var goldenAngle = 0.381966;
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var hexRad = 48;
+var hexRad = 32;
 var minDepth = 3;
 var cellLs;
 var markerLs;
 var fillLs;
+var rotating = false;
+var fading = false;
 
 var cell = function(){
 	this.path = []; // 0-1 | 2-3 | 4-5
@@ -65,9 +67,11 @@ var cell = function(){
 	this.x;
 	this.y;
 
+	this.highlight = function(){};
+
 	this.render = function(){
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
-		if(Math.abs(this.goalRotation-this.rotation)<0.001)this.rotation = this.goalRotation;
+		if(Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
@@ -265,7 +269,7 @@ function generateGrid(){
 	}
 };
 
-generateGrid();
+generateGrid(); // TODO: move this to an appropriate spot
 
 //==  MAIN LOOP  =============================================================//
 
@@ -297,6 +301,39 @@ function render(){
 	for(var i in cellLs)if(!cellLs[i].render())animating = true;
 	for(var i in markerLs)markerLs[i].render();
 	if(animating)requestAnimationFrame(render);
+	else if(rotating){
+		rotating = false;
+		fillLs = [];
+		for(var i=0;i<markerLs.length;i+=2){
+			// returns true=found pair,save path | false=found null,ignore path
+			var tracedPath = [];
+			var recurse = function(fromCell,fromSide,originMkr){
+				var toSide;
+				for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
+					if(i%2 === 0)toSide = i-1;
+					else toSide = i+1;
+					break;
+				}
+
+				if(fromCell.adjacent[toSide] === null){
+					if(fromCell.markers[toSide] === null)return false;
+					else if(fromCell.markers[toSide].partner === originMkr)return true;
+					else return false;
+				}else{
+					if(recurse(fromCell.adjacent[toSide],(toSide+3)%6,originMkr)){
+						var c = new cell();
+						c.path.push(fromSide);
+						c.path.push(toSide);
+						tracedPath.push(c);
+					}else return false;
+				}
+			};
+
+			var m = markerLs[i];
+			recurse(m.attachedTo,m.side,m);
+			if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add animation data to this structure
+		}
+	}
 	
 	gfx.restore();
 };
@@ -310,7 +347,7 @@ function getMousePos(evt){
 
 //	canvas.addEventListener("mousedown",function(e){
 //		var mouse = getMousePos(e);
-//		render(); // XXX: remove if theres continuous animation
+//		render();
 //	});
 
 canvas.addEventListener("mouseup",function(e){
@@ -332,9 +369,9 @@ canvas.addEventListener("mouseup",function(e){
 	switch(e.which){
 		case 1:minCell.rotateCCW();break;
 		case 3:minCell.rotateCW();break;
-	}
+	}rotating = true;
 
-	render(); // XXX: remove if theres continuous animation
+	render();
 });
 
 //==  PROGRAM ENTRY + MISC  ==================================================//
@@ -344,7 +381,7 @@ canvas.oncontextmenu = function(){return false;}; // prevent right click menu
 window.onresize = function(){ // auto-resize canvas to window
 	ww = canvas.width  = window.innerWidth;
 	wh = canvas.height = window.innerHeight;
-	render(); // XXX: remove if theres continuous animation
+	render();
 };
 
 (function main(){
