@@ -52,8 +52,8 @@ var goldenAngle = 0.381966;
 
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
-var minDepth = 1;
-var markerPairs = 25;
+var minDepth = 12;
+var markerPairs = 8;
 var cellLs;
 var edgeCellLs;
 var markerLs;
@@ -152,13 +152,15 @@ var marker = function(attach,side,color){
 
 function generateGrid(){
 	var preGrid = [
-        [1,1,1,0,0],
-        [1,1,1,1,0],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,0],
-        [1,1,1,1,0],
+        [1,1,1,1,1,0,0,0,0],
+        [1,1,1,1,1,1,0,0,0],
+        [1,1,1,1,1,1,1,0,0],
+        [1,1,1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1,1,1],
+        [0,1,1,1,1,1,1,1,1],
+        [0,0,1,1,1,1,1,1,1],
+        [0,0,0,1,1,1,1,1,1],
+        [0,0,0,0,1,1,1,1,1],
 	];
 
 	// initializes cells, grid, and cellLs
