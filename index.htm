@@ -93,10 +93,9 @@ var drawPath = function(cell,i,offset){
 
 var sq3 = Math.sqrt(3);
 var baselineRad = 48;
-var minDepth = 3;
-var markerPairs = 5;
 var cellLs;
 var markerLs;
+var edgeCellLs;
 var fillLs = [];
 var fading = false;
 var evaluate = false;
@@ -178,17 +177,10 @@ var marker = function(attach,side,color){
 	};
 };
 
-function generateGrid(){
-	var preGrid = [
-		[1,1,1,0,0],
-		[1,1,1,1,0],
-		[1,1,0,1,1],
-		[0,1,1,1,1],
-		[0,0,1,1,1],
-	];
-
+function generateGrid(minDepth,markerPairs,preGrid){
 	// initializes cells, grid, and cellLs
 	cellLs = [];
+	edgeCellLs = [];
 	for(var i=0;i<preGrid.length;++i)
 	for(var j=0;j<preGrid[i].length;++j)
 	if(preGrid[i][j] === 1){
@@ -218,6 +210,12 @@ function generateGrid(){
 		if(i>0)                                 grid[i][j].adjacent[3]=grid[i-1][j  ];
 		if(i>0&&j>0)                            grid[i][j].adjacent[4]=grid[i-1][j-1];
 		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
+		for(var k=0;k<6;++k){
+			if(grid[i][j].adjacent[k] === null){
+				edgeCellLs.push(grid[i][j]);
+				break;
+			}
+		}
 	}
 
 	minX -= baselineRad/2*sq3;
@@ -230,76 +228,76 @@ function generateGrid(){
 
 	// initialize markers
 	markerLs = [];
-	for(var i=0;i<markerPairs;++i){
-		while(true){
-			var c,dir,m0,m1;
-			outer:while(true){
-				c = cellLs[rInt(cellLs.length)];
-				var adjLs = shuffle([0,1,2,3,4,5]);
-				for(var a=0;a<6;++a)if(c.adjacent[adjLs[a]] === null && c.markers[adjLs[a]] === null){
-					dir = adjLs[a];
-					m0 = new marker(c,dir,i*goldenAngle+0.3);
-					c.markers[dir] = m0;
-					break outer;
-				}
-			}
+	shuffle(edgeCellLs);
+	var markers = 0;
+	fullList: for(var i in edgeCellLs) {
+        var c = edgeCellLs[i];
+        var dir, m0, m1;
+        for (var k = 0; k < 6; k++) {
+            if ((c.adjacent[k] != null) || (c.markers[k] != null)) {
+                continue;
+            }
+            var dir = k;
+            m0 = new marker(c, dir, markers * goldenAngle + 0.3);
+            c.markers[dir] = m0;
+            var destCell, destDir;
+            var recurse = function (fromCell, fromDir, depth) {
+                if (depth > 0)fromDir = (fromDir + 3) % 6;
+                var adjLs = [0, 1, 2, 3, 4, 5];
+                adjLs.splice(fromDir, 1);
+                shuffle(adjLs);
+                for (var a = 0; a < 6; ++a) {
+                    if (fromCell.used[adjLs[a]])continue;
+                    fromCell.used[fromDir] = true;
+                    fromCell.used[adjLs[a]] = true;
+                    fromCell.path.push(fromDir);
+                    fromCell.path.push(adjLs[a]);
 
-			// returns true=found dest,keep path | false=not found dest,remove path
-			var destCell,destDir;
-			var recurse = function(fromCell,fromDir,depth){
-				if(depth>0)fromDir = (fromDir+3)%6;
-				var adjLs = [0,1,2,3,4,5];
-				adjLs.splice(fromDir,1);
-				shuffle(adjLs);
-				for(var a=0;a<6;++a){
-					if(fromCell.used[adjLs[a]])continue;
-					fromCell.used[fromDir] = true;
-					fromCell.used[adjLs[a]] = true;
-					fromCell.path.push(fromDir);
-					fromCell.path.push(adjLs[a]);
+                    var clear = function () {
+                        fromCell.used[fromDir] = false;
+                        fromCell.used[adjLs[a]] = false;
+                        fromCell.path.pop();
+                        fromCell.path.pop();
+                    }
 
-					var clear = function(){
-						fromCell.used[fromDir] = false;
-						fromCell.used[adjLs[a]] = false;
-						fromCell.path.pop();
-						fromCell.path.pop();
-					}
+                    var d = fromCell.adjacent[adjLs[a]];
+                    if (d !== null && d !== undefined) {
+                        if (recurse(d, adjLs[a], depth + 1))return true;
+                        else {
+                            clear();
+                            continue;
+                        }
+                    } else if (fromCell.markers[adjLs[a]]) {
+                        clear();
+                        continue;
+                    } else if (depth < minDepth) {
+                        clear();
+                        continue;
+                    } else {
+                        destCell = fromCell;
+                        destDir = adjLs[a];
+                        m1 = new marker(destCell, destDir, markers * goldenAngle + 0.3);
+                        destCell.markers[adjLs[a]] = m1;
+                        return true;
+                    }
+                }
+                return false;
+            };
 
-					var d = fromCell.adjacent[adjLs[a]];
-					if(d !== null && d !== undefined){
-						if(recurse(d,adjLs[a],depth+1))return true;
-						else{
-							clear();
-							continue;
-						}
-					}else if(fromCell.markers[adjLs[a]]){
-						clear();
-						continue;
-					}else if(depth < minDepth){
-						clear();
-						continue;
-					}else{
-						destCell = fromCell;
-						destDir = adjLs[a];
-						m1 = new marker(destCell,destDir,i*goldenAngle+0.3);
-						destCell.markers[adjLs[a]] = m1;
-						return true;
-					}
-				}return false;
-			};
+            if (!recurse(c, dir, 0)) {
+                c.markers[dir] = null;
+                continue;
+            }
 
-			if(!recurse(c,dir,0)){
-				c.markers[dir] = null;
-				continue;
-			}
-
-			m0.partner = m1;
-			m1.partner = m0;
-			markerLs.push(m0);
-			markerLs.push(m1);
-			break;
-		}
-	}
+            m0.partner = m1;
+            m1.partner = m0;
+            markerLs.push(m0);
+            markerLs.push(m1);
+            markers++;
+            if (markers === markerPairs)
+                break fullList;
+        }
+    }
 
 	// add rest of paths
 	for(var i in cellLs){
@@ -414,7 +412,7 @@ function render(){
 
 //==  INPUT HANDLING  ========================================================//
 
-var tchStart,tchMove,minCell;
+var tchStart,tchMove,tchCell;
 
 function getMousePos(evt){
 	var rect = canvas.getBoundingClientRect();
@@ -449,42 +447,11 @@ document.addEventListener("keyup",function(e){
 },false);
 
 canvas.addEventListener("touchstart",function(e){
-	e.preventDefault();
+	// e.preventDefault();  // turns off clicking
 	var tch = e.changedTouches[0];
+	tchCell = null;
 	tchStart = [tch.pageX,tch.pageY];
 	tchMove = tchStart;
-	var minDist = Infinity;
-	minCell = null;
-	for(var i in cellLs){
-		var c = cellLs[i];
-		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
-		var y = c.y*scale/baselineRad+wh/2-tchStart[1];
-		var sqDist = x*x+y*y;
-		if(sqDist<minDist){
-			minDist = sqDist;
-			minCell = c;
-		}
-	}if(minDist>scale*scale)return;
-},false);
-
-canvas.addEventListener("touchmove",function(e){
-	e.preventDefault();
-	var tch = e.changedTouches[0];
-	var move = tch.pageX-tchMove[0];
-	if(Math.abs(move)>scale){
-		if(move<0)minCell.rotateCCW();
-		else if(move>0)minCell.rotateCW();
-		tchMove = [tch.pageX,tch.pageY];
-	}requestEval();
-},false);
-
-canvas.addEventListener("touchend",function(e){
-    e.preventDefault();
-    console.log("here");
-    var tch = e.changedTouches[0];
-    var dist = Math.sqrt(Math.pow((tch.pageX-tchStart[0]),2)+Math.pow((tch.pageY-tchStart[1]),2))
-    console.log("dist = "+dist);
-    if(dist<scale){
 	var minDist = Infinity;
 	var minCell = null;
 	for(var i in cellLs){
@@ -497,11 +464,20 @@ canvas.addEventListener("touchend",function(e){
 			minCell = c;
 		}
 	}if(minDist>scale*scale)return;
-	minCell.rotateCW();
-	requestEval();
-	console.log("got here");
-    }
-}.false);
+	tchCell = minCell;
+},false);
+
+canvas.addEventListener("touchmove",function(e){
+	e.preventDefault();
+	if(tchCell === null)return;
+	var tch = e.changedTouches[0];
+	var move = tch.pageX-tchMove[0];
+	if(Math.abs(move)>scale){
+		if(move<0)tchCell.rotateCCW();
+		else if(move>0)tchCell.rotateCW();
+		tchMove = [tch.pageX,tch.pageY];
+	}requestEval();
+},false);
 
 //==  PROGRAM ENTRY + MISC  ==================================================//
 
@@ -520,7 +496,13 @@ window.onresize = function(){ // auto-resize canvas to window
 
 (function main(){
 	document.body.appendChild(canvas);
-	window.onresize();generateGrid();window.onresize(); // hacky, i know
+	var minDepth = 6;
+	var markerPairs = 7;
+	window.onresize();
+//	generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);
+	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
+//	generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);
+	window.onresize();
 	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
