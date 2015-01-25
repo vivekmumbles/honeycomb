@@ -297,6 +297,7 @@ generateGrid(); // TODO: move this to an appropriate spot
 //==  MAIN LOOP  =============================================================//
 
 function evalPaths(){
+	requestAnimationFrame(render);
 	fillLs = [];
 	for(var i=0;i<markerLs.length;i+=2){
 		// returns true=found pair,save path | false=found null,ignore path
@@ -378,7 +379,6 @@ function render(){
 	else if(rotating){
 		rotating = false;
 		evalPaths();
-		requestAnimationFrame(render);
 	}
 	
 	gfx.restore();
@@ -418,8 +418,14 @@ canvas.addEventListener("mouseup",function(e){
 	}rotating = true;
 
 	evalPaths();
-	render();
 });
+
+document.addEventListener("keyup",function(e){
+	switch(e.keyCode){
+		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;evalPaths();break; // R
+		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;evalPaths();break; // S
+	}
+},false);
 
 //==  PROGRAM ENTRY + MISC  ==================================================//
 
