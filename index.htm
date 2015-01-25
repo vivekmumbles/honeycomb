@@ -24,8 +24,8 @@ Number.prototype.mod = function(n){return((this%n)+n)%n;};
 
 //==  MISC RENDERING  ========================================================//
 
-function rgb(r,g,b){gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
-function rgba(r,g,b,a){gfx.fillStyle=gfx.strokeStyle="rgba("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+","+a+")";};
+function rgb(r,g,b){return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
+function rgba(r,g,b,a){return gfx.fillStyle=gfx.strokeStyle="rgba("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+","+a+")";};
 
 function hsv(h,s,v){
 	var r,g,b,i,f,p,q,t;
@@ -42,7 +42,7 @@ function hsv(h,s,v){
 		case 3:r=p,g=q,b=v;break;
 		case 4:r=t,g=p,b=v;break;
 		case 5:r=v,g=p,b=q;break;
-	}gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";
+	}return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*(1-r))+","+Math.floor(255*(1-g))+","+Math.floor(255*(1-b))+")";
 }
 
 var goldenAngle = 0.381966;
@@ -51,7 +51,8 @@ var goldenAngle = 0.381966;
 
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
-var minDepth = 4;
+var minDepth = 3;
+var markerPairs = 5;
 var cellLs;
 var markerLs;
 var fillLs;
@@ -99,6 +100,10 @@ var cell = function(){
 	};
 
 	this.render = function(){
+		for(var i=0;i<6;++i)if(this.adjacent[i] === null && this.markers[i] === null){
+			// TODO: experiment with endcaps
+		}
+
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
 		if(Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
@@ -128,10 +133,10 @@ var marker = function(attach,side,color){
 	this.render = function(){
 		gfx.save();
 		gfx.translate(this.attachedTo.x+ww/2,this.attachedTo.y+wh/2);
-		hsv(this.color,1,1);
 		var r = this.side*1/3*Math.PI;
-
-		gfx.lineWidth = 5;
+		gfx.shadowColor = hsv(this.color,1,1);
+		gfx.shadowBlur = 4;
+		gfx.lineWidth = 4;
 		gfx.beginPath();
 		gfx.moveTo(Math.cos(r)*hexRad*0.92,Math.sin(r)*hexRad*0.92);
 		gfx.lineTo(Math.cos(r)*hexRad*1.12,Math.sin(r)*hexRad*1.12);
@@ -149,8 +154,6 @@ function generateGrid(){
 		[0,1,1,1,1],
 		[0,0,1,1,1],
 	];
-
-	var markerPairs = 3;
 
 	// initializes cells, grid, and cellLs
 	cellLs = [];
@@ -193,7 +196,7 @@ function generateGrid(){
 				var adjLs = shuffle([0,1,2,3,4,5]);
 				for(var a=0;a<6;++a)if(c.adjacent[adjLs[a]] === null && c.markers[adjLs[a]] === null){
 					dir = adjLs[a];
-					m0 = new marker(c,dir,i*goldenAngle);
+					m0 = new marker(c,dir,i*goldenAngle+0.3);
 					c.markers[dir] = m0;
 					break outer;
 				}
@@ -236,7 +239,7 @@ function generateGrid(){
 					}else{
 						destCell = fromCell;
 						destDir = adjLs[a];
-						m1 = new marker(destCell,destDir,i*goldenAngle);
+						m1 = new marker(destCell,destDir,i*goldenAngle+0.3);
 						destCell.markers[adjLs[a]] = m1;
 						return true;
 					}
@@ -266,7 +269,8 @@ function generateGrid(){
 	}
 
 	// randomize rotations
-	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
+//	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
+	evalPaths(); // DELETE
 };
 
 generateGrid(); // TODO: move this to an appropriate spot
@@ -347,8 +351,9 @@ function render(){
 	for(var i in markerLs)markerLs[i].render();
 	for(var i in fillLs){
 		var f = fillLs[i];
-		hsv(f[0],1,1);
-		gfx.lineWidth = 5;
+		gfx.shadowColor = hsv(f[0],1,1);
+		gfx.shadowBlur = 4;
+		gfx.lineWidth = 4;
 		for(var j in f[1])f[1][j].highlight();
 	}
 
