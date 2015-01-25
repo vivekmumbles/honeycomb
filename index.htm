@@ -143,9 +143,10 @@ var marker = function(attach,side,color){
 		gfx.save();
 		gfx.translate(this.attachedTo.x+ww/2,this.attachedTo.y+wh/2);
 		var r = this.side*1/3*Math.PI;
-		gfx.shadowColor = hsv(this.color,1,1);
-		gfx.shadowBlur = 4;
+		gfx.shadowColor = rgb(0.1,0.1,0.1);
+		gfx.shadowBlur = 8;
 		gfx.lineWidth = 4;
+		hsv(this.color,1,1);
 		gfx.beginPath();
 		gfx.moveTo(Math.cos(r)*hexRad*0.92,Math.sin(r)*hexRad*0.92);
 		gfx.lineTo(Math.cos(r)*hexRad*1.12,Math.sin(r)*hexRad*1.12);
