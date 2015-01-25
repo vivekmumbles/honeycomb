@@ -2,13 +2,14 @@
 <style>*{position:absolute;margin:0px;}</style>
 <body><script type="text/javascript">
 
-/*+==========================================================================+*\
-                 __ ______  _  ________  ___________  __  ______ 
-                / // / __ \/ |/ / __/\ \/ / ___/ __ \/  |/  / _ )
-               / _  / /_/ /    / _/   \  / /__/ /_/ / /|_/ / _  |
-              /_//_/\____/_/|_/___/   /_/\___/\____/_/  /_/____/ 
-
-\*+==========================================================================+*/
+/*
+ * +==========================================================================+*\ __
+ * ______ _ ________ ___________ __ ______ / // / __ \/ |/ / __/\ \/ / ___/ __ \/ |/ / _ ) / _ /
+ * /_/ / / _/ \ / /__/ /_/ / /|_/ / _ | /_//_/\____/_/|_/___/ /_/\___/\____/_/
+ * /_/____/
+ * 
+ * \*+==========================================================================+
+ */
 
 "use strict"
 
@@ -22,7 +23,7 @@ function rInt(x){return Math.floor(Math.random()*x);};
 function shuffle(ls){return ls.sort(function(){return 0.5-Math.random();});}
 Number.prototype.mod = function(n){return((this%n)+n)%n;};
 
-//==  MISC RENDERING  ========================================================//
+// == MISC RENDERING ========================================================//
 
 function rgb(r,g,b){return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 function rgba(r,g,b,a){return gfx.fillStyle=gfx.strokeStyle="rgba("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+","+a+")";};
@@ -47,13 +48,14 @@ function hsv(h,s,v){
 
 var goldenAngle = 0.381966;
 
-//==  GRID GENERATION  =======================================================//
+// == GRID GENERATION =======================================================//
 
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
 var minDepth = 3;
 var markerPairs = 5;
 var cellLs;
+var edgeCellLs;
 var markerLs;
 var fillLs;
 var rotating = false;
@@ -87,8 +89,10 @@ var cell = function(){
 	this.used = [false,false,false,false,false,false];
 	this.adjacent = [null,null,null,null,null,null]; // E SE SW W NW NE
 	this.markers = [null,null,null,null,null,null]; // E SE SW W NW NE
-	this.rotation = 0; // cw = + | ccw = - [ when this is a float, treat as its rendered rotation, treat discrete rot as invalid ]
-	this.goalRotation = 0; // when rotating tile, modify this value instead of rotation
+	this.rotation = 0; // cw = + | ccw = - [ when this is a float, treat as its
+						// rendered rotation, treat discrete rot as invalid ]
+	this.goalRotation = 0; // when rotating tile, modify this value instead of
+							// rotation
 	this.x;
 	this.y;
 
@@ -157,6 +161,7 @@ function generateGrid(){
 
 	// initializes cells, grid, and cellLs
 	cellLs = [];
+	edgeCellLs = [];
 	for(var i=0;i<preGrid.length;++i)
 	for(var j=0;j<preGrid[i].length;++j)
 	if(preGrid[i][j] === 1){
@@ -184,77 +189,86 @@ function generateGrid(){
 		if(i>0)                                 grid[i][j].adjacent[3]=grid[i-1][j  ];
 		if(i>0&&j>0)                            grid[i][j].adjacent[4]=grid[i-1][j-1];
 		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
+		for(int k = 0; k<6; k++){
+			if(grid[i][j].adjacent[k] === null){
+				edgeCellLs.push(preGrid[i][j]);
+				break;
+			}
+		}
 	}
 
 	// initialize markers
 	markerLs = [];
-	for(var i=0;i<markerPairs;++i){
-		while(true){
-			var c,dir,m0,m1;
-			outer:while(true){
-				c = cellLs[rInt(cellLs.length)];
-				var adjLs = shuffle([0,1,2,3,4,5]);
-				for(var a=0;a<6;++a)if(c.adjacent[adjLs[a]] === null && c.markers[adjLs[a]] === null){
-					dir = adjLs[a];
-					m0 = new marker(c,dir,i*goldenAngle+0.3);
-					c.markers[dir] = m0;
-					break outer;
+	shuffle(edgeCellLs);
+	var markers = 0;
+	for(var i : edgeCellLs){
+		var c = edgeCellLs[i];
+		var dir, m0, m1;
+		for(var k = 0; k < 6; k++){
+			if(c.adjacent[k] === null){
+				var dir = k;
+				m0 = new marker(c,dir,markers*goldenAngle+0.3);
+				c.markers[dir] = m0;
+				break;
+			}
+		}
+
+		// returns true=found dest,keep path | false=not found dest,remove
+		// path
+		var destCell,destDir;
+		var recurse = function(fromCell,fromDir,depth){
+			if(depth>0)fromDir = (fromDir+3)%6;
+			var adjLs = [0,1,2,3,4,5];
+			adjLs.splice(fromDir,1);
+			shuffle(adjLs);
+			for(var a=0;a<6;++a){
+				if(fromCell.used[adjLs[a]])continue;
+				fromCell.used[fromDir] = true;
+				fromCell.used[adjLs[a]] = true;
+				fromCell.path.push(fromDir);
+				fromCell.path.push(adjLs[a]);
+
+				var clear = function(){
+					fromCell.used[fromDir] = false;
+					fromCell.used[adjLs[a]] = false;
+					fromCell.path.pop();
+					fromCell.path.pop();
 				}
-			}
 
-			// returns true=found dest,keep path | false=not found dest,remove path
-			var destCell,destDir;
-			var recurse = function(fromCell,fromDir,depth){
-				if(depth>0)fromDir = (fromDir+3)%6;
-				var adjLs = [0,1,2,3,4,5];
-				adjLs.splice(fromDir,1);
-				shuffle(adjLs);
-				for(var a=0;a<6;++a){
-					if(fromCell.used[adjLs[a]])continue;
-					fromCell.used[fromDir] = true;
-					fromCell.used[adjLs[a]] = true;
-					fromCell.path.push(fromDir);
-					fromCell.path.push(adjLs[a]);
-
-					var clear = function(){
-						fromCell.used[fromDir] = false;
-						fromCell.used[adjLs[a]] = false;
-						fromCell.path.pop();
-						fromCell.path.pop();
-					}
-
-					var d = fromCell.adjacent[adjLs[a]];
-					if(d !== null && d !== undefined){
-						if(recurse(d,adjLs[a],depth+1))return true;
-						else{
-							clear();
-							continue;
-						}
-					}else if(fromCell.markers[adjLs[a]]){
+				var d = fromCell.adjacent[adjLs[a]];
+				if(d !== null && d !== undefined){
+					if(recurse(d,adjLs[a],depth+1))return true;
+					else{
 						clear();
 						continue;
-					}else if(depth < minDepth){
-						clear();
-						continue;
-					}else{
-						destCell = fromCell;
-						destDir = adjLs[a];
-						m1 = new marker(destCell,destDir,i*goldenAngle+0.3);
-						destCell.markers[adjLs[a]] = m1;
-						return true;
 					}
-				}return false;
-			};
+				}else if(fromCell.markers[adjLs[a]]){
+					clear();
+					continue;
+				}else if(depth < minDepth){
+					clear();
+					continue;
+				}else{
+					destCell = fromCell;
+					destDir = adjLs[a];
+					m1 = new marker(destCell,destDir,i*goldenAngle+0.3);
+					destCell.markers[adjLs[a]] = m1;
+					return true;
+				}
+			}return false;
+		};
 
-			if(!recurse(c,dir,0)){
-				c.markers[dir] = null;
-				continue;
-			}
+		if(!recurse(c,dir,0)){
+			c.markers[dir] = null;
+			continue;
+		}
 
-			m0.partner = m1;
-			m1.partner = m0;
-			markerLs.push(m0);
-			markerLs.push(m1);
+		m0.partner = m1;
+		m1.partner = m0;
+		markerLs.push(m0);
+		markerLs.push(m1);
+		markers++;
+		if(markers === markerPairs)
 			break;
 		}
 	}
@@ -269,13 +283,13 @@ function generateGrid(){
 	}
 
 	// randomize rotations
-//	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
+// for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
 	evalPaths(); // DELETE
 };
 
 generateGrid(); // TODO: move this to an appropriate spot
 
-//==  MAIN LOOP  =============================================================//
+// == MAIN LOOP =============================================================//
 
 function evalPaths(){
 	requestAnimationFrame(render);
@@ -318,7 +332,11 @@ function evalPaths(){
 
 		var m = markerLs[i];
 		recurse(m.attachedTo,m.side,m);
-		if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add animation data to this structure
+		if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add
+																	// animation
+																	// data to
+																	// this
+																	// structure
 	}
 };
 
@@ -366,17 +384,17 @@ function render(){
 	gfx.restore();
 };
 
-//==  INPUT HANDLING  ========================================================//
+// == INPUT HANDLING ========================================================//
 
 function getMousePos(evt){
 	var rect = canvas.getBoundingClientRect();
 	return{x:evt.clientX-rect.left,y:evt.clientY-rect.top};
 };
 
-//	canvas.addEventListener("mousedown",function(e){
-//		var mouse = getMousePos(e);
-//		render();
-//	});
+// canvas.addEventListener("mousedown",function(e){
+// var mouse = getMousePos(e);
+// render();
+// });
 
 canvas.addEventListener("mouseup",function(e){
 	var mouse = getMousePos(e);
@@ -409,7 +427,7 @@ document.addEventListener("keyup",function(e){
 	}
 },false);
 
-//==  PROGRAM ENTRY + MISC  ==================================================//
+// == PROGRAM ENTRY + MISC ==================================================//
 
 canvas.oncontextmenu = function(){return false;}; // prevent right click menu
 
