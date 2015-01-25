@@ -3,10 +3,10 @@
 <body><script type="text/javascript">
 
 /*+==========================================================================+*\
-                 __ ______  _  ________  ___________  __  ______ 
-                / // / __ \/ |/ / __/\ \/ / ___/ __ \/  |/  / _ )
-               / _  / /_/ /    / _/   \  / /__/ /_/ / /|_/ / _  |
-              /_//_/\____/_/|_/___/   /_/\___/\____/_/  /_/____/ 
+                      __________  ___  _  __________  _  __
+                     /_  __/ __ \/ _ \| |/_/  _/ __ \/ |/ /
+                      / / / /_/ / , _ >  <_/ // /_/ /    / 
+                     /_/  \____/_/|_/_/|_/___/\____/_/|_/  
 
 \*+==========================================================================+*/
 
@@ -76,9 +76,11 @@ var minDepth = 3;
 var markerPairs = 5;
 var cellLs;
 var markerLs;
-var fillLs;
-var rotating = false;
+var fillLs = [];
 var fading = false;
+var evaluate = false;
+var lastEvalReqTick = -1;
+var cellCtr = 0;
 
 var drawPath = function(cell,i,offset){
 	if(offset === undefined)offset = 0;
@@ -105,6 +107,7 @@ var drawPath = function(cell,i,offset){
 }
 
 var cell = function(){
+	this.id = ++cellCtr+".";
 	this.path = []; // 0-1 | 2-3 | 4-5
 	this.used = [false,false,false,false,false,false];
 	this.adjacent = [null,null,null,null,null,null]; // E SE SW W NW NE
@@ -116,7 +119,10 @@ var cell = function(){
 
 	this.shadow = function(){
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
-		if(Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
+		if(this.goalRotation !== this.rotation && Math.abs(this.goalRotation-this.rotation)<0.01){
+			this.rotation = this.goalRotation;
+			requestEval();
+		}
 		gfx.save();
 		gfx.translate(this.x+ww/2,this.y+wh/2);
 		gfx.rotate(this.rotation*Math.PI/3);
@@ -301,20 +307,25 @@ function generateGrid(){
 
 	// randomize rotations
 	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
-//	evalPaths(); // DELETE
-	rotating = true;
 };
 
 generateGrid(); // TODO: move this to an appropriate spot
 
 //==  MAIN LOOP  =============================================================//
 
-function evalPaths(){
+function requestEval(){
+	if(lastEvalReqTick === tick)return;
+	lastEvalReqTick = tick;
+	evaluate = true;
 	requestAnimationFrame(render);
-	fillLs = [];
+}
+
+function evalPaths(){
+	for(var i=0;i<fillLs.length;++i)fillLs[i][3] = 0; // fade everything out, gets set back to true if its detected
 	for(var i=0;i<markerLs.length;i+=2){
 		// returns true=found pair,save path | false=found null,ignore path
 		var tracedPath = [];
+		var hash = "";
 		var recurse = function(fromCell,fromSide,originMkr){
 			if(fromCell.rotation !== fromCell.goalRotation)return false;
 			fromSide = (fromSide-fromCell.goalRotation).mod(6);
@@ -332,6 +343,7 @@ function evalPaths(){
 				c.x = fromCell.x;
 				c.y = fromCell.y;
 				tracedPath.push(c);
+				hash += fromCell.id;
 			}
 
 			if(fromCell.adjacent[toSide] === null){
@@ -350,7 +362,14 @@ function evalPaths(){
 
 		var m = markerLs[i];
 		recurse(m.attachedTo,m.side,m);
-		if(tracedPath.length > 0)fillLs.push([m.color,tracedPath]); // TODO: add animation data to this structure
+		if(tracedPath.length > 0){
+			var hashFound = false;
+			for(var i=0;i<fillLs.length;++i)if(fillLs[i][4] === hash){
+				hashFound = true;
+				fillLs[i][3] = 1;
+			}if(!hashFound)fillLs.push([m.color,tracedPath,0,1,hash]);
+			else console.log("SUCCESS");
+		}
 	}
 };
 
@@ -374,6 +393,11 @@ function render(){
 	elapsed = Math.min(currentTick-tick,5);
 	tick = currentTick;
 
+	if(evaluate){
+		evaluate = false;
+		evalPaths();
+	}
+
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
 
@@ -389,7 +413,6 @@ function render(){
 	// grid background | XXX: this is only valid if the grid center is the center of a hex
 //	gfx.save();
 //	gfx.translate(ww/2,wh/2);
-//
 //	var r = 14;//must be even
 //	for(var i=0;i<=r;++i)for(var j=0;j<=r;++j){
 //		var x = (-(j-Math.floor(r/2))+2*i-2*Math.floor(r/2))*hexRad/2*sq3;
@@ -408,17 +431,16 @@ function render(){
 	for(var i in markerLs)markerLs[i].render();
 	for(var i in fillLs){
 		var f = fillLs[i];
-		gfx.shadowColor = hsv(f[0],1,1);
+		f[2] += (f[3]-f[2])*elapsed*0.02;
+		if(f[2] !== f[3] && Math.abs(f[2]-f[3]) < 0.01)f[2] = f[3];
+		if(f[2] !== f[3])animating = true;
+		gfx.shadowColor = hsva(f[0],1,1,f[2]);
 		gfx.shadowBlur = 4;
 		gfx.lineWidth = 4;
 		for(var j in f[1])f[1][j].highlight();
-	}
+	}fillLs = fillLs.filter(function(f){return f[3] === 1 || (f[3] === 0 && f[2] === 0);})
 
 	if(animating)requestAnimationFrame(render);
-	else if(rotating){
-		rotating = false;
-		evalPaths();
-	}
 	
 	gfx.restore();
 };
@@ -429,11 +451,6 @@ function getMousePos(evt){
 	var rect = canvas.getBoundingClientRect();
 	return{x:evt.clientX-rect.left,y:evt.clientY-rect.top};
 };
-
-//	canvas.addEventListener("mousedown",function(e){
-//		var mouse = getMousePos(e);
-//		requestAnimationFrame(render);
-//	});
 
 canvas.addEventListener("mouseup",function(e){
 	var mouse = getMousePos(e);
@@ -454,15 +471,15 @@ canvas.addEventListener("mouseup",function(e){
 	switch(e.which){
 		case 1:minCell.rotateCCW();break;
 		case 3:minCell.rotateCW();break;
-	}rotating = true;
+	}
 
-	evalPaths();
+	requestEval();
 });
 
 document.addEventListener("keyup",function(e){
 	switch(e.keyCode){
-		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;evalPaths();rotating=true;break; // R
-		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;evalPaths();rotating=true;break; // S
+		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;requestEval();break; // R
+		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;requestEval();break; // S
 	}
 },false);
 
