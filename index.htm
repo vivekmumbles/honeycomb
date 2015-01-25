@@ -67,7 +67,32 @@ var cell = function(){
 	this.x;
 	this.y;
 
-	this.highlight = function(){};
+	this.highlight = function(){
+		gfx.save();
+		gfx.translate(this.x+ww/2,this.y+wh/2);
+		for(var i=0;i<this.path.length;i+=2){
+			gfx.beginPath();
+			var p0 = Math.min(this.path[i],this.path[i+1]);
+			var p1 = Math.max(this.path[i],this.path[i+1]);
+			switch(p0*10+p1){
+				case  1:gfx.arc(hexRad/2*sq3,hexRad/2,hexRad/2,5/6*Math.PI,3/2*Math.PI);break;
+				case  2:gfx.arc(hexRad/2*sq3,hexRad*1.5,hexRad*1.5,7/6*Math.PI,3/2*Math.PI);break;
+				case  3:gfx.moveTo(hexRad/2*sq3,0);gfx.lineTo(-hexRad/2*sq3,0);break;
+				case  4:gfx.arc(hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/2*Math.PI,5/6*Math.PI);break;
+				case  5:gfx.arc(hexRad/2*sq3,-hexRad/2,hexRad/2,1/2*Math.PI,7/6*Math.PI);break;
+				case 12:gfx.arc(0,hexRad,hexRad/2,7/6*Math.PI,11/6*Math.PI);break;
+				case 13:gfx.arc(-hexRad/2*sq3,hexRad*1.5,hexRad*1.5,3/2*Math.PI,11/6*Math.PI);break;
+				case 14:gfx.moveTo(hexRad/4*sq3,hexRad*3/4);gfx.lineTo(-hexRad/4*sq3,-hexRad*3/4);break;
+				case 15:gfx.arc(hexRad*sq3,0,hexRad*1.5,5/6*Math.PI,7/6*Math.PI);break;
+				case 23:gfx.arc(-hexRad/2*sq3,hexRad/2,hexRad/2,3/2*Math.PI,1/6*Math.PI);break;
+				case 24:gfx.arc(-hexRad*sq3,0,hexRad*1.5,-1/6*Math.PI,1/6*Math.PI);break;
+				case 25:gfx.moveTo(-hexRad/4*sq3,hexRad*3/4);gfx.lineTo(hexRad/4*sq3,-hexRad*3/4);break;
+				case 34:gfx.arc(-hexRad/2*sq3,-hexRad/2,hexRad/2,11/6*Math.PI,1/2*Math.PI);break;
+				case 35:gfx.arc(-hexRad/2*sq3,-hexRad*1.5,hexRad*1.5,1/6*Math.PI,1/2*Math.PI);break;
+				case 45:gfx.arc(0,-hexRad,hexRad/2,1/6*Math.PI,5/6*Math.PI);break;
+			}gfx.stroke();
+		}gfx.restore();
+	};
 
 	this.render = function(){
 		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
@@ -300,6 +325,13 @@ function render(){
 	var animating = false;
 	for(var i in cellLs)if(!cellLs[i].render())animating = true;
 	for(var i in markerLs)markerLs[i].render();
+	for(var i in fillLs){
+		var f = fillLs[i];
+		hsv(f[0],1,1);
+		gfx.lineWidth = 7;
+		for(var j in f[1])f[1][j].highlight();
+	}
+
 	if(animating)requestAnimationFrame(render);
 	else if(rotating){
 		rotating = false;
@@ -307,24 +339,33 @@ function render(){
 		for(var i=0;i<markerLs.length;i+=2){
 			// returns true=found pair,save path | false=found null,ignore path
 			var tracedPath = [];
-			var recurse = function(fromCell,fromSide,originMkr){
+			var recurse = function(fromCell,fromSide,originMkr){ // TODO: TAKE INTO ACCOUNT ROTATION OF CELL
 				var toSide;
 				for(var i=0;i<6;++i)if(fromCell.path[i] === fromSide){
-					if(i%2 === 0)toSide = i-1;
-					else toSide = i+1;
+					if(i%2 === 0)toSide = fromCell.path[i+1];
+					else toSide = fromCell.path[i-1];
 					break;
+				}
+
+				var saveCell = function(){
+					var c = new cell();
+					c.path.push(fromSide);
+					c.path.push(toSide);
+					c.x = fromCell.x;
+					c.y = fromCell.y;
+					tracedPath.push(c);
 				}
 
 				if(fromCell.adjacent[toSide] === null){
 					if(fromCell.markers[toSide] === null)return false;
-					else if(fromCell.markers[toSide].partner === originMkr)return true;
-					else return false;
+					else if(fromCell.markers[toSide].partner === originMkr){
+						saveCell();
+						return true;
+					}else return false;
 				}else{
 					if(recurse(fromCell.adjacent[toSide],(toSide+3)%6,originMkr)){
-						var c = new cell();
-						c.path.push(fromSide);
-						c.path.push(toSide);
-						tracedPath.push(c);
+						saveCell();
+						return true;
 					}else return false;
 				}
 			};
