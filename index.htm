@@ -448,7 +448,7 @@ canvas.addEventListener("touchstart",function(e){
     e.preventDefault();
     var tchs = e.changedTouches;
     var x = y = 0;
-    for(var i=0;i<tchs.lenghth;++i){
+    for(var i=0;i<tchs.length;++i){
 	x += tchs[i].screenX;
 	y += tchs[i].screenY;
     }var tchStart = [x/tchs.length,y/tchs.length];
@@ -458,7 +458,7 @@ canvas.addEventListener("touchend",function(e){
     e.preventDefault();
     var tchs = e.changedTouches;
     var x = y = 0;
-    for(var i=0;i<tchs.lenghth;++i){
+    for(var i=0;i<tchs.length;++i){
 	x += tchs[i].screenX;
 	// y += tchs[i].screenY;
     }var move = x/tchs.length - tchStart[0];
