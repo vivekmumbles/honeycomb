@@ -348,6 +348,7 @@ canvas.addEventListener("touchstart", function(e){
 	x += tchs[i].screenX;
 	y += tchs[i].screenY;
     }tchStart = [x/tchs.length,y/tchs.length]
+    alert("touch start");
   }, false);
 
 canvas.addEventListener("touchend", function(e){
