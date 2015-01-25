@@ -354,8 +354,25 @@ function render(){
 
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
-	gfx.save();
 
+	// grid background | XXX: this is only valid if the grid center is the center of a hex
+	gfx.save();
+	gfx.translate(ww/2,wh/2);
+
+	var r = 14;//must be even
+	for(var i=0;i<=r;++i)for(var j=0;j<=r;++j){
+		var x = (-(j-Math.floor(r/2))+2*i-2*Math.floor(r/2))*hexRad/2*sq3;
+		var y = (1.5*hexRad*j)-1.5*hexRad*Math.floor(r/2);
+		rgb(0.85,0.85,0.85);
+		drawHex(x,y,hexRad-2);
+		rgb(0.88,0.88,0.88);
+		drawHex(x,y,hexRad-8);
+	}
+	gfx.restore();
+
+	gfx.save();
+//	gfx.translate(-ww/2,-wh/2);
+//	gfx.scale(2,2);
 	var animating = false;
 	for(var i in cellLs)if(!cellLs[i].shadow())animating = true;
 	for(var i in cellLs)cellLs[i].render();
