@@ -451,6 +451,7 @@ document.addEventListener("keyup",function(e){
 canvas.addEventListener("touchstart",function(e){
 	// e.preventDefault();  // turns off clicking
 	var tch = e.changedTouches[0];
+	tchCell = null;
 	tchStart = [tch.pageX,tch.pageY];
 	tchMove = tchStart;
 	var minDist = Infinity;
@@ -470,6 +471,7 @@ canvas.addEventListener("touchstart",function(e){
 
 canvas.addEventListener("touchmove",function(e){
 	e.preventDefault();
+	if(tchCell === null)return;
 	var tch = e.changedTouches[0];
 	var move = tch.pageX-tchMove[0];
 	if(Math.abs(move)>scale){
