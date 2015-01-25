@@ -441,6 +441,7 @@ canvas.addEventListener("mouseup",function(e){
 
 document.addEventListener("keyup",function(e){
 	switch(e.keyCode){
+		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;requestEval();break; // R
 		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;requestEval();break; // S
 	}
 },false);
@@ -499,8 +500,8 @@ window.onresize = function(){ // auto-resize canvas to window
 	var markerPairs = 7;
 	window.onresize();
 //	generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);
-	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
-//	generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);
+//	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
+	generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);
 	window.onresize();
 	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
