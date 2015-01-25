@@ -464,7 +464,7 @@ canvas.addEventListener("touchstart",function(e){
 
 canvas.addEventListener("touchend",function(e){
     e.preventDefault();
-    alert("got here");
+    // alert("got here");
     // var tchs = e.changedTouches;
     // var x = y = 0;
     // for(var i=0;i<tchs.length;++i){
@@ -477,6 +477,7 @@ canvas.addEventListener("touchend",function(e){
     alert("end: "+tch.screenX+", "+tch.screenY);
     var tchEnd = [tch.screenX,tch.screeny];
     var move = tchEnd[0] - tchStart[0];
+    console.log(move);
     alert("move="+move);
 
     alert(move);
