@@ -1,6 +1,49 @@
 <!DOCTYPE html><html><head><title>Torxion</title><meta charset="UTF-8">
-<style>*{position:absolute;margin:0px;}</style>
-<body><script type="text/javascript">
+<style>
+body{position:absolute;margin:0px;}
+#menu{position:absolute;}
+#menu>ul{list-style-type:none;}
+li{font-family: Arial;font-size:64px;font-weight:900;margin-bottom:-15px;}
+#easy:hover{color:green;}
+#med:hover{color:gold;}
+#hard:hover{color:firebrick;}
+#shuf:hover{color:dodgerblue;}
+#rst:hover{color:darkorange;}
+a{color:inherit;text-decoration:none;letter-spacing:-4px;}
+.arrow-right {
+	width: 0; 
+	height: 0; 
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
+	border-left: 15px solid black;
+}
+.arrow-right:hover {border-left:15px solid lightsteelblue;}
+.arrow-left {
+	width: 40%; 
+	height: 0; 
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent; 
+	border-right:15px solid black; 
+}
+.arrow-left:hover {border-right:15px solid lightsteelblue;}
+</style>
+<body>
+
+<canvas id="canvas" style="z-index: 1">Your browser does not support HTML5 canvas</canvas>
+
+<div id="menu" style="z-index: 2">
+<ul id="list">
+    <li id="logo"><a href="#">torsion</a></li>
+    <li id="easy"><a href="#">easy</a></li>
+    <li id="med"><a href="#">medium</a></li>
+    <li id="hard"><a href="#">hard</a></li>
+    <li id="shuf"><a href="#">shuffle</a></li>
+    <li id="rst"><a href="#">reset</a></li>
+</ul>
+<a href="#"><div id="arrow" class="arrow-left"></div></a>
+</div>
+
+<script type="text/javascript">
 
 /*+==========================================================================+*\
                       __________  ___  _  __________  _  __
@@ -12,7 +55,24 @@
 
 "use strict"
 
-var canvas = document.createElement("canvas");
+// menu code
+
+var arrow = document.getElementById("arrow");
+arrow.onclick = function(e){
+    var list = document.getElementById("list");
+    if(arrow.className==="arrow-left"){
+	list.style.marginLeft = "-100%";
+	arrow.className = "arrow-right";
+    }
+    else if(arrow.className==="arrow-right"){
+	list.style.marginLeft = "0";
+	arrow.className = "arrow-left";
+    }
+}
+
+// end menu code
+
+var canvas = document.getElementById("canvas");
 var gfx = canvas.getContext("2d");
 var ww,wh,tick=0,tickOffset=0,elapsed=0;
 function rfloat(x){return Math.random()*x;};
