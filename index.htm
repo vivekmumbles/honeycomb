@@ -341,10 +341,43 @@ canvas.addEventListener("mouseup",function(e){
 
 var tchStart;
 canvas.addEventListener("touchstart", function(e){
-    tchStart = e.changedTouches;
-    alert(JSON.stringify(tchStart));
-}, false);
+    e.preventDefault();
+    var tchs = e.changedTouches;
+    var x=y=0;
+    for(var i=0;i<touches.length;++i){
+	x += tchs[i].screenX;
+	y += tchs[i].screenY;
+    }tchStart = [x/tchs.length,y/tchs.length]
+  }, false);
 
+canvas.addEventListener("touchend", function(e){
+    e.preventDefault();
+    var tchs = e.changedTouches;
+    var x=y=0;
+    for(var i=0;i<tchs.length;++i){
+	x += tchs[i].screenX;
+	// y += tchs[i].screenY;
+    }var move = x/tchs.length-tchStart[0];
+    alert(move);
+
+    var minDist = Infinity;
+    var minCell = null;
+    for(var i in cellLs){
+	var c = cellLs[i];
+	var x = c.x+ww/2-tchStart.x;
+	var y = c.y+wh/2-tchStart.y;
+	var sqDist = x*x+y*y;
+	if(sqDist<minDist){
+	    minDist = sqDist;
+	    minCell = c;
+	}
+    }if(minDist>hexRad*hexRad)return;
+
+    for(var i =0;i<Math.abs(move);i+=10){
+	if     (move<0) minCell.rotateCCW();
+	else if(move>0) minCell.rotateCW();
+    }
+}, false);
 
 
 //==  PROGRAM ENTRY + MISC  ==================================================//
