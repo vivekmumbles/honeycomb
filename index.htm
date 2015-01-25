@@ -476,12 +476,12 @@ canvas.addEventListener("touchend",function(e){
     var tch = e.changedTouches[0];
    //  alert("end: "+tch.screenX+", "+tch.screenY);
     var tchEnd = [tch.screenX,tch.screeny];
-    console.log("tchStart = "+tchStart);
+    // console.log("tchStart = "+tchStart);
     var move = tchEnd[0] - tchStart[0];
-    console.log(move);
+    console.log("move = "+move);
     // alert("move="+move);
 
-    alert(move);
+    // alert(move);
 
     var minDist = Infinity;
     var minCell = null;
