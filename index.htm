@@ -422,8 +422,8 @@ canvas.addEventListener("mouseup",function(e){
 
 document.addEventListener("keyup",function(e){
 	switch(e.keyCode){
-		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;evalPaths();break; // R
-		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;evalPaths();break; // S
+		case 82:for(var i in cellLs)cellLs[i].goalRotation=0;evalPaths();rotating=true;break; // R
+		case 83:for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;evalPaths();rotating=true;break; // S
 	}
 },false);
 
