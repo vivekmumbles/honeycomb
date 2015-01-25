@@ -464,7 +464,7 @@ canvas.addEventListener("touchstart",function(e){
 			minDist = sqDist;
 			minCell = c;
 		}
-	}if(minDist>hexRad*hexRad)return;
+	}if(minDist>scale*scale)return;
 },false);
 
 canvas.addEventListener("touchmove",function(e){
