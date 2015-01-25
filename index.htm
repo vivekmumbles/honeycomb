@@ -45,6 +45,12 @@ function hsv(h,s,v){
 	}return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*(1-r))+","+Math.floor(255*(1-g))+","+Math.floor(255*(1-b))+")";
 }
 
+function hsva(h,s,v,a){
+	var s = hsv(h,s,v);
+	s = s.substring(0,3)+"a"+s.substring(3,s.length-1);
+	return gfx.fillStyle=gfx.strokeStyle=s+","+a+")";
+}
+
 var goldenAngle = 0.381966;
 
 function textWidth(string,size,spacing){
