@@ -450,6 +450,7 @@ canvas.addEventListener("touchstart",function(e){
     e.preventDefault();
     var tch = e.changedTouches[0];
     tchStart = [tch.screenX,tch.screenY];
+    console.log(tchStart);
     tchMove = tchStart;
     var minDist = Infinity;
     minCell = null;
