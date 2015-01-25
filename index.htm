@@ -482,7 +482,7 @@ canvas.addEventListener("touchend",function(e){
     e.preventDefault();
     var tch = e.changedTouches[0];
     var dist = Math.sqrt(Math.pow((tch.pageX-tchStart[0]),2)+Math.pow((tch.pageY-tchStart[1]),2))
-    if(dist<hexRad/2){
+    if(dist<scale*2){
 	var minDist = Infinity;
 	minCell = null;
 	for(var i in cellLs){
