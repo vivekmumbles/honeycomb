@@ -53,7 +53,7 @@ var goldenAngle = 0.381966;
 var sq3 = Math.sqrt(3);
 var hexRad = 48;
 var minDepth = 3;
-var markerPairs = 5;
+var markerPairs = 30;
 var cellLs;
 var edgeCellLs;
 var markerLs;
@@ -189,7 +189,7 @@ function generateGrid(){
 		if(i>0)                                 grid[i][j].adjacent[3]=grid[i-1][j  ];
 		if(i>0&&j>0)                            grid[i][j].adjacent[4]=grid[i-1][j-1];
 		if(j>0)                                 grid[i][j].adjacent[5]=grid[i  ][j-1];
-		for(int k = 0; k<6; k++){
+		for(var k = 0; k<6; k++){
 			if(grid[i][j].adjacent[k] === null){
 				edgeCellLs.push(preGrid[i][j]);
 				break;
@@ -201,87 +201,88 @@ function generateGrid(){
 	markerLs = [];
 	shuffle(edgeCellLs);
 	var markers = 0;
-	for(var i : edgeCellLs){
-		var c = edgeCellLs[i];
-		var dir, m0, m1;
-		for(var k = 0; k < 6; k++){
-			if(c.adjacent[k] === null){
-				var dir = k;
-				m0 = new marker(c,dir,markers*goldenAngle+0.3);
-				c.markers[dir] = m0;
-				break;
-			}
-		}
+	fulllist: for(var i in edgeCellLs) {
+        var c = edgeCellLs[i];
+        var dir, m0, m1;
+        for (var k = 0; k < 6; k++) {
+            if (c.adjacent[k] = !null)
+                continue;
+            var dir = k;
+            m0 = new marker(c, dir, markers * goldenAngle + 0.3);
+            c.markers[dir] = m0;
+            // returns true=found dest,keep path | false=not found dest,remove
+            // path
+            var destCell, destDir;
+            var recurse = function (fromCell, fromDir, depth) {
+                if (depth > 0)fromDir = (fromDir + 3) % 6;
+                var adjLs = [0, 1, 2, 3, 4, 5];
+                adjLs.splice(fromDir, 1);
+                shuffle(adjLs);
+                for (var a = 0; a < 6; ++a) {
+                    if (fromCell.used[adjLs[a]])continue;
+                    fromCell.used[fromDir] = true;
+                    fromCell.used[adjLs[a]] = true;
+                    fromCell.path.push(fromDir);
+                    fromCell.path.push(adjLs[a]);
 
-		// returns true=found dest,keep path | false=not found dest,remove
-		// path
-		var destCell,destDir;
-		var recurse = function(fromCell,fromDir,depth){
-			if(depth>0)fromDir = (fromDir+3)%6;
-			var adjLs = [0,1,2,3,4,5];
-			adjLs.splice(fromDir,1);
-			shuffle(adjLs);
-			for(var a=0;a<6;++a){
-				if(fromCell.used[adjLs[a]])continue;
-				fromCell.used[fromDir] = true;
-				fromCell.used[adjLs[a]] = true;
-				fromCell.path.push(fromDir);
-				fromCell.path.push(adjLs[a]);
+                    var clear = function () {
+                        fromCell.used[fromDir] = false;
+                        fromCell.used[adjLs[a]] = false;
+                        fromCell.path.pop();
+                        fromCell.path.pop();
+                    }
 
-				var clear = function(){
-					fromCell.used[fromDir] = false;
-					fromCell.used[adjLs[a]] = false;
-					fromCell.path.pop();
-					fromCell.path.pop();
-				}
+                    var d = fromCell.adjacent[adjLs[a]];
+                    if (d !== null && d !== undefined) {
+                        if (recurse(d, adjLs[a], depth + 1))return true;
+                        else {
+                            clear();
+                            continue;
+                        }
+                    } else if (fromCell.markers[adjLs[a]]) {
+                        clear();
+                        continue;
+                    } else if (depth < minDepth) {
+                        clear();
+                        continue;
+                    } else {
+                        destCell = fromCell;
+                        destDir = adjLs[a];
+                        m1 = new marker(destCell, destDir, i * goldenAngle + 0.3);
+                        destCell.markers[adjLs[a]] = m1;
+                        return true;
+                    }
+                }
+                return false;
+            };
 
-				var d = fromCell.adjacent[adjLs[a]];
-				if(d !== null && d !== undefined){
-					if(recurse(d,adjLs[a],depth+1))return true;
-					else{
-						clear();
-						continue;
-					}
-				}else if(fromCell.markers[adjLs[a]]){
-					clear();
-					continue;
-				}else if(depth < minDepth){
-					clear();
-					continue;
-				}else{
-					destCell = fromCell;
-					destDir = adjLs[a];
-					m1 = new marker(destCell,destDir,i*goldenAngle+0.3);
-					destCell.markers[adjLs[a]] = m1;
-					return true;
-				}
-			}return false;
-		};
+            if (!recurse(c, dir, 0)) {
+                c.markers[dir] = null;
+                continue;
+            }
 
-		if(!recurse(c,dir,0)){
-			c.markers[dir] = null;
-			continue;
-		}
+            m0.partner = m1;
+            m1.partner = m0;
+            markerLs.push(m0);
+            markerLs.push(m1);
+            markers++;
+            if (markers === markerPairs)
+                break fulllist;
+        }
+    }
 
-		m0.partner = m1;
-		m1.partner = m0;
-		markerLs.push(m0);
-		markerLs.push(m1);
-		markers++;
-		if(markers === markerPairs)
-			break;
-		}
-	}
-
-	// add rest of paths
-	for(var i in cellLs){
-		var c = cellLs[i];
-		if(c.path.length === 6)continue;
-		var indicies = c.used.map(function(b,i){if(!b)return i;}).filter(function(e){return e !== undefined;});
-		shuffle(indicies);
-		c.path = c.path.concat(indicies);
-	}
-
+        // add rest of paths
+        for (var i in cellLs) {
+            var c = cellLs[i];
+            if (c.path.length === 6)continue;
+            var indicies = c.used.map(function (b, i) {
+                if (!b)return i;
+            }).filter(function (e) {
+                return e !== undefined;
+            });
+            shuffle(indicies);
+            c.path = c.path.concat(indicies);
+        }
 	// randomize rotations
 // for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
 	evalPaths(); // DELETE
