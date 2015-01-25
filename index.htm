@@ -22,7 +22,7 @@ function rInt(x){return Math.floor(Math.random()*x);};
 function shuffle(ls){return ls.sort(function(){return 0.5-Math.random();});}
 Number.prototype.mod = function(n){return((this%n)+n)%n;};
 
-//==  MISC RENDERING  ========================================================//
+//==  RENDERING  =============================================================//
 
 function rgb(r,g,b){return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+")";};
 function rgba(r,g,b,a){return gfx.fillStyle=gfx.strokeStyle="rgba("+Math.floor(255*r)+","+Math.floor(255*g)+","+Math.floor(255*b)+","+a+")";};
@@ -45,42 +45,27 @@ function hsv(h,s,v){
 	}return gfx.fillStyle=gfx.strokeStyle="rgb("+Math.floor(255*(1-r))+","+Math.floor(255*(1-g))+","+Math.floor(255*(1-b))+")";
 }
 
+var goldenAngle = 0.381966;
 function hsva(h,s,v,a){
 	var s = hsv(h,s,v);
 	s = s.substring(0,3)+"a"+s.substring(3,s.length-1);
 	return gfx.fillStyle=gfx.strokeStyle=s+","+a+")";
 }
 
-var goldenAngle = 0.381966;
-
-function textWidth(string,size,spacing){
-	gfx.font = "800 "+size*1.37+"px arial";
-	return gfx.measureText(string).width + (spacing * (string.length-1));
-}
-
-function text(string,x,y,size,spacing){
-	gfx.textBaseline = "alphabetic";
-	gfx.font = "800 "+size*1.37+"px arial";
-	for(var i=0;i<string.length;++i){
-
-		gfx.fillText(string.charAt(i),x,y+size);
-		x += gfx.measureText(string.charAt(i)).width+spacing;
-	}
-}
-
-//==  GRID GENERATION  =======================================================//
-
-var sq3 = Math.sqrt(3);
-var hexRad = 48;
-var minDepth = 3;
-var markerPairs = 5;
-var cellLs;
-var markerLs;
-var fillLs = [];
-var fading = false;
-var evaluate = false;
-var lastEvalReqTick = -1;
-var cellCtr = 0;
+function drawHex(x,y,r){
+	gfx.save();
+	gfx.translate(x,y);
+	gfx.beginPath();
+	gfx.moveTo(0,r);
+	gfx.lineTo(r/2*sq3,r/2);
+	gfx.lineTo(r/2*sq3,-r/2);
+	gfx.lineTo(0,-r);
+	gfx.lineTo(-r/2*sq3,-r/2);
+	gfx.lineTo(-r/2*sq3,r/2);
+	gfx.lineTo(0,r);
+	gfx.fill();
+	gfx.restore();
+};
 
 var drawPath = function(cell,i,offset){
 	if(offset === undefined)offset = 0;
@@ -105,6 +90,20 @@ var drawPath = function(cell,i,offset){
 		case 45:gfx.arc(0,-hexRad,hexRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
 	}gfx.stroke();
 }
+
+//==  GRID GENERATION  =======================================================//
+
+var sq3 = Math.sqrt(3);
+var hexRad = 48;
+var minDepth = 3;
+var markerPairs = 5;
+var cellLs;
+var markerLs;
+var fillLs = [];
+var fading = false;
+var evaluate = false;
+var lastEvalReqTick = -1;
+var cellCtr = 0;
 
 var cell = function(){
 	this.id = ++cellCtr+".";
@@ -307,10 +306,6 @@ function generateGrid(){
 	requestEval();
 };
 
-generateGrid(); // TODO: move this to an appropriate spot
-
-//==  MAIN LOOP  =============================================================//
-
 function requestEval(){
 	if(lastEvalReqTick === tick)return;
 	lastEvalReqTick = tick;
@@ -368,25 +363,11 @@ function evalPaths(){
 				f[3] = 1;
 				break;
 			}if(!hashFound)fillLs.push([m.color,tracedPath,0,1,hash]);
-			else console.log("FOUND HASH");
 		}
-	}console.log(markerLs.length);
+	}
 };
 
-function drawHex(x,y,r){
-	gfx.save();
-	gfx.translate(x,y);
-	gfx.beginPath();
-	gfx.moveTo(0,r);
-	gfx.lineTo(r/2*sq3,r/2);
-	gfx.lineTo(r/2*sq3,-r/2);
-	gfx.lineTo(0,-r);
-	gfx.lineTo(-r/2*sq3,-r/2);
-	gfx.lineTo(-r/2*sq3,r/2);
-	gfx.lineTo(0,r);
-	gfx.fill();
-	gfx.restore();
-};
+//==  MAIN LOOP  =============================================================//
 
 function render(){
 	var currentTick = new Date().getTime()-tickOffset;
@@ -400,29 +381,6 @@ function render(){
 
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
-
-	gfx.save();
-	gfx.shadowColor = rgb(0.4,0.4,0.4);
-	gfx.shadowBlur = 8;
-	var w = textWidth("Torxion",36,-3);
-	text("Torxion",ww/2-w/2,wh/2-256,36,-3);
-	w = textWidth("Team JVL",18,-2);
-	text("Team JVL",ww/2-w/2,wh/2+220,18,-2);
-	gfx.restore();
-
-	// grid background | XXX: this is only valid if the grid center is the center of a hex
-//	gfx.save();
-//	gfx.translate(ww/2,wh/2);
-//	var r = 14;//must be even
-//	for(var i=0;i<=r;++i)for(var j=0;j<=r;++j){
-//		var x = (-(j-Math.floor(r/2))+2*i-2*Math.floor(r/2))*hexRad/2*sq3;
-//		var y = (1.5*hexRad*j)-1.5*hexRad*Math.floor(r/2);
-//		rgb(0.85,0.85,0.85);
-//		drawHex(x,y,hexRad-2);
-//		rgb(0.88,0.88,0.88);
-//		drawHex(x,y,hexRad-8);
-//	}
-//	gfx.restore();
 
 	gfx.save();
 	var animating = false;
@@ -493,6 +451,7 @@ window.onresize = function(){ // auto-resize canvas to window
 
 (function main(){
 	document.body.appendChild(canvas);
+	generateGrid();
 	tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
