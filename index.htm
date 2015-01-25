@@ -449,7 +449,7 @@ var minCell;
 canvas.addEventListener("touchstart",function(e){
     e.preventDefault();
     var tch = e.changedTouches[0];
-    tchStart = [tch.screenX,tch.screenY];
+    tchStart = [tch.pageX,tch.pageY];
     console.log(tchStart);
     tchMove = tchStart;
     var minDist = Infinity;
@@ -469,12 +469,12 @@ canvas.addEventListener("touchstart",function(e){
 canvas.addEventListener("touchmove",function(e){
     e.preventDefault();
     var tch = e.changedTouches[0];
-    var move = tch.screenX - tchMove[0];
+    var move = tch.pageX - tchMove[0];
     if(Math.abs(move)>100){
 	console.log("tchMove = "+tchMove[0]);
 	if     (move<0) minCell.rotateCCW();
 	else if(move>0) minCell.rotateCW();
-	tchMove = [tch.screenX,tch.screenY];
+	tchMove = [tch.pageX,tch.pageY];
     } requestEval();
 },false);
 
