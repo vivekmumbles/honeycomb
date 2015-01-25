@@ -4,5 +4,9 @@
     height: 200px;
     background-color: red;
     margin: auto;
+<<<<<<< HEAD
+    transform: translateY(50%);
+=======
+>>>>>>> fe1c997200cff4e566ace11b03ab0f21296af06b
     border-radius: 25px;
 }
