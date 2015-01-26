@@ -70,28 +70,27 @@ var drawPath = function(cell,i){
 	var p0 = Math.min(cell.path[i],cell.path[i+1]);
 	var p1 = Math.max(cell.path[i],cell.path[i+1]);
 	switch(p0*10+p1){
-		case  1:gfx.arc(baselineRad/2*sq3,baselineRad/2,baselineRad/2,5/6*Math.PI,3/2*Math.PI);break;
-		case  2:gfx.arc(baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,7/6*Math.PI,3/2*Math.PI);break;
-		case  3:gfx.moveTo(baselineRad/2*sq3,0);gfx.lineTo(-baselineRad/2*sq3,0);break;
-		case  4:gfx.arc(baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/2*Math.PI,5/6*Math.PI);break;
-		case  5:gfx.arc(baselineRad/2*sq3,-baselineRad/2,baselineRad/2,1/2*Math.PI,7/6*Math.PI);break;
-		case 12:gfx.arc(0,baselineRad,baselineRad/2,7/6*Math.PI,11/6*Math.PI);break;
-		case 13:gfx.arc(-baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,3/2*Math.PI,11/6*Math.PI);break;
-		case 14:gfx.moveTo((baselineRad)/4*sq3,(baselineRad)*3/4);gfx.lineTo(-(baselineRad)/4*sq3,-(baselineRad)*3/4);break;
-		case 15:gfx.arc(baselineRad*sq3,0,baselineRad*1.5,5/6*Math.PI,7/6*Math.PI);break;
-		case 23:gfx.arc(-baselineRad/2*sq3,baselineRad/2,baselineRad/2,3/2*Math.PI,1/6*Math.PI);break;
-		case 24:gfx.arc(-baselineRad*sq3,0,baselineRad*1.5,-1/6*Math.PI,1/6*Math.PI);break;
-		case 25:gfx.moveTo(-(baselineRad)/4*sq3,(baselineRad)*3/4);gfx.lineTo((baselineRad)/4*sq3,-(baselineRad)*3/4);break;
-		case 34:gfx.arc(-baselineRad/2*sq3,-baselineRad/2,baselineRad/2,11/6*Math.PI,1/2*Math.PI);break;
-		case 35:gfx.arc(-baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/6*Math.PI,1/2*Math.PI);break;
-		case 45:gfx.arc(0,-baselineRad,baselineRad/2,1/6*Math.PI,5/6*Math.PI);break;
+		case  1:gfx.arc(48/2*sq3,48/2,48/2,5/6*Math.PI,3/2*Math.PI);break;
+		case  2:gfx.arc(48/2*sq3,48*1.5,48*1.5,7/6*Math.PI,3/2*Math.PI);break;
+		case  3:gfx.moveTo(48/2*sq3,0);gfx.lineTo(-48/2*sq3,0);break;
+		case  4:gfx.arc(48/2*sq3,-48*1.5,48*1.5,1/2*Math.PI,5/6*Math.PI);break;
+		case  5:gfx.arc(48/2*sq3,-48/2,48/2,1/2*Math.PI,7/6*Math.PI);break;
+		case 12:gfx.arc(0,48,48/2,7/6*Math.PI,11/6*Math.PI);break;
+		case 13:gfx.arc(-48/2*sq3,48*1.5,48*1.5,3/2*Math.PI,11/6*Math.PI);break;
+		case 14:gfx.moveTo((48)/4*sq3,(48)*3/4);gfx.lineTo(-(48)/4*sq3,-(48)*3/4);break;
+		case 15:gfx.arc(48*sq3,0,48*1.5,5/6*Math.PI,7/6*Math.PI);break;
+		case 23:gfx.arc(-48/2*sq3,48/2,48/2,3/2*Math.PI,1/6*Math.PI);break;
+		case 24:gfx.arc(-48*sq3,0,48*1.5,-1/6*Math.PI,1/6*Math.PI);break;
+		case 25:gfx.moveTo(-(48)/4*sq3,(48)*3/4);gfx.lineTo((48)/4*sq3,-(48)*3/4);break;
+		case 34:gfx.arc(-48/2*sq3,-48/2,48/2,11/6*Math.PI,1/2*Math.PI);break;
+		case 35:gfx.arc(-48/2*sq3,-48*1.5,48*1.5,1/6*Math.PI,1/2*Math.PI);break;
+		case 45:gfx.arc(0,-48,48/2,1/6*Math.PI,5/6*Math.PI);break;
 	}gfx.stroke();
 }
 
 //==  GRID GENERATION  =======================================================//
 
 var sq3 = Math.sqrt(3);
-var baselineRad = 48;
 var cellLs;
 var markerLs;
 var edgeCellLs;
@@ -120,12 +119,12 @@ var cell = function(){
 		gfx.translate(this.x,this.y);
 		gfx.rotate(this.rotation*Math.PI/3);
 		gfx.shadowBlur = 4;
-		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,baselineRad-2);
+		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,48-2);
 		gfx.lineCap = "round";rgb(0.1,0.1,0.1);gfx.lineWidth = 19;
 		gfx.beginPath();
-		gfx.moveTo(baselineRad/2*sq3,0);gfx.lineTo(-baselineRad/2*sq3,0);
-		gfx.moveTo((baselineRad)/4*sq3,(baselineRad)*3/4);gfx.lineTo(-(baselineRad)/4*sq3,-(baselineRad)*3/4);
-		gfx.moveTo(-(baselineRad)/4*sq3,(baselineRad)*3/4);gfx.lineTo((baselineRad)/4*sq3,-(baselineRad)*3/4);
+		gfx.moveTo(48/2*sq3,0);gfx.lineTo(-48/2*sq3,0);
+		gfx.moveTo((48)/4*sq3,(48)*3/4);gfx.lineTo(-(48)/4*sq3,-(48)*3/4);
+		gfx.moveTo(-(48)/4*sq3,(48)*3/4);gfx.lineTo((48)/4*sq3,-(48)*3/4);
 		gfx.stroke();
 		for(var i=0;i<this.path.length;i+=2)drawPath(this,i);
 		gfx.restore();
@@ -133,14 +132,10 @@ var cell = function(){
 	}
 
 	this.render = function(){
-		for(var i=0;i<6;++i)if(this.adjacent[i] === null && this.markers[i] === null){
-			// TODO: experiment with endcaps
-		}
-
 		gfx.save();
 		gfx.translate(this.x,this.y);
 		gfx.rotate(this.rotation*Math.PI/3);
-		rgb(0.6,0.6,0.6);drawHex(0,0,baselineRad-8);
+		rgb(0.6,0.6,0.6);drawHex(0,0,48-7);
 		for(var i=0;i<this.path.length;i+=2){
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
 			gfx.lineCap = "round";
@@ -172,13 +167,15 @@ var marker = function(attach,side,color){
 		gfx.save();
 		gfx.translate(this.attachedTo.x,this.attachedTo.y);
 		var r = this.side*1/3*Math.PI;
+		gfx.shadowColor = hsv(this.color,1,1);
+		gfx.shadowBlur = 8;
 		gfx.lineWidth = 27;
 		hsv(this.color,1,1);
 		gfx.beginPath();
 		gfx.lineCap = "round";
 		gfx.moveTo(0,0);
 		var q = 6;
-		gfx.lineTo(Math.cos(r)*(baselineRad-q),Math.sin(r)*(baselineRad-q));
+		gfx.lineTo(Math.cos(r)*(48-q),Math.sin(r)*(48-q));
 		gfx.stroke();
 
 		gfx.restore();
@@ -193,9 +190,9 @@ var marker = function(attach,side,color){
 		gfx.lineWidth = 4;
 		gfx.beginPath();
 		gfx.lineCap = "round";
-		gfx.moveTo(Math.cos(r)*(baselineRad-5.9),Math.sin(r)*(baselineRad-5.9));
+		gfx.moveTo(Math.cos(r)*(48-5.9),Math.sin(r)*(48-5.9));
 		var q = 6;
-		gfx.lineTo(Math.cos(r)*(baselineRad-q),Math.sin(r)*(baselineRad-q));
+		gfx.lineTo(Math.cos(r)*(48-q),Math.sin(r)*(48-q));
 		gfx.stroke();
 
 		gfx.restore();
@@ -226,8 +223,8 @@ function generateGrid(minDepth,markerPairs,preGrid){
 	for(var i=0;i<grid.length;++i)
 	for(var j=0;j<grid[i].length;++j)
 	if(grid[i][j] !== null){
-		var x = grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*baselineRad/2*sq3;
-		var y = grid[i][j].y = (1.5*baselineRad*j)-1.5*baselineRad*Math.floor(grid.length/2);
+		var x = grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*48/2*sq3;
+		var y = grid[i][j].y = (1.5*48*j)-1.5*48*Math.floor(grid.length/2);
 		if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
 		if(i<grid.length-1)                     grid[i][j].adjacent[0]=grid[i+1][j  ];
 		if(i<grid.length-1&&j<grid[i].length-1) grid[i][j].adjacent[1]=grid[i+1][j+1];
@@ -243,13 +240,13 @@ function generateGrid(minDepth,markerPairs,preGrid){
 		}
 	}
 
-	minX -= baselineRad/2*sq3;
-	maxX += baselineRad/2*sq3;
-	minY -= baselineRad;
-	maxY += baselineRad;
+	minX -= 48/2*sq3;
+	maxX += 48/2*sq3;
+	minY -= 48;
+	maxY += 48;
 
-	width  = (maxX-minX)/baselineRad;
-	height = (maxY-minY)/baselineRad;
+	width  = (maxX-minX)/48;
+	height = (maxY-minY)/48;
 
 	// initialize markers
 	markerLs = [];
@@ -416,7 +413,7 @@ function render(){
 	gfx.save();
 
 	gfx.translate(ww/2,wh/2);
-	gfx.scale(scale/baselineRad,scale/baselineRad);
+	gfx.scale(scale/48,scale/48);
 
 	var animating = false;
 	for(var i in markerLs)markerLs[i].belowRender();
@@ -451,8 +448,8 @@ canvas.addEventListener("mouseup",function(e){
 	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
-		var x = c.x*scale/baselineRad+ww/2-mouse.x;
-		var y = c.y*scale/baselineRad+wh/2-mouse.y;
+		var x = c.x*scale/48+ww/2-mouse.x;
+		var y = c.y*scale/48+wh/2-mouse.y;
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
@@ -482,8 +479,8 @@ canvas.addEventListener("touchstart",function(e){
 	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
-		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
-		var y = c.y*scale/baselineRad+wh/2-tchStart[1];
+		var x = c.x*scale/48+ww/2-tchStart[0];
+		var y = c.y*scale/48+wh/2-tchStart[1];
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
