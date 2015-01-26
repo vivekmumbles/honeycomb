@@ -65,27 +65,26 @@ function drawHex(x,y,r){
 	gfx.restore();
 };
 
-var drawPath = function(cell,i,offset){
-	if(offset === undefined)offset = 0;
+var drawPath = function(cell,i){
 	gfx.beginPath();
 	var p0 = Math.min(cell.path[i],cell.path[i+1]);
 	var p1 = Math.max(cell.path[i],cell.path[i+1]);
 	switch(p0*10+p1){
-		case  1:gfx.arc(baselineRad/2*sq3,baselineRad/2,baselineRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
-		case  2:gfx.arc(baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
-		case  3:gfx.moveTo(baselineRad/2*sq3-offset,0);gfx.lineTo(-baselineRad/2*sq3+offset,0);break;
-		case  4:gfx.arc(baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/2*Math.PI+offset,5/6*Math.PI-offset);break;
-		case  5:gfx.arc(baselineRad/2*sq3,-baselineRad/2,baselineRad/2,1/2*Math.PI+offset,7/6*Math.PI-offset);break;
-		case 12:gfx.arc(0,baselineRad,baselineRad/2,7/6*Math.PI+offset,11/6*Math.PI-offset);break;
-		case 13:gfx.arc(-baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,3/2*Math.PI+offset,11/6*Math.PI-offset);break;
-		case 14:gfx.moveTo((baselineRad-offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo(-(baselineRad+offset)/4*sq3,-(baselineRad+offset)*3/4);break;
-		case 15:gfx.arc(baselineRad*sq3,0,baselineRad*1.5,5/6*Math.PI+offset,7/6*Math.PI-offset);break;
-		case 23:gfx.arc(-baselineRad/2*sq3,baselineRad/2,baselineRad/2,3/2*Math.PI+offset,1/6*Math.PI-offset);break;
-		case 24:gfx.arc(-baselineRad*sq3,0,baselineRad*1.5,-1/6*Math.PI+offset,1/6*Math.PI-offset);break;
-		case 25:gfx.moveTo(-(baselineRad+offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo((baselineRad-offset)/4*sq3,-(baselineRad+offset)*3/4);break;
-		case 34:gfx.arc(-baselineRad/2*sq3,-baselineRad/2,baselineRad/2,11/6*Math.PI+offset,1/2*Math.PI-offset);break;
-		case 35:gfx.arc(-baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/6*Math.PI+offset,1/2*Math.PI-offset);break;
-		case 45:gfx.arc(0,-baselineRad,baselineRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
+		case  1:gfx.arc(baselineRad/2*sq3,baselineRad/2,baselineRad/2,5/6*Math.PI,3/2*Math.PI);break;
+		case  2:gfx.arc(baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,7/6*Math.PI,3/2*Math.PI);break;
+		case  3:gfx.moveTo(baselineRad/2*sq3,0);gfx.lineTo(-baselineRad/2*sq3,0);break;
+		case  4:gfx.arc(baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/2*Math.PI,5/6*Math.PI);break;
+		case  5:gfx.arc(baselineRad/2*sq3,-baselineRad/2,baselineRad/2,1/2*Math.PI,7/6*Math.PI);break;
+		case 12:gfx.arc(0,baselineRad,baselineRad/2,7/6*Math.PI,11/6*Math.PI);break;
+		case 13:gfx.arc(-baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,3/2*Math.PI,11/6*Math.PI);break;
+		case 14:gfx.moveTo((baselineRad)/4*sq3,(baselineRad)*3/4);gfx.lineTo(-(baselineRad)/4*sq3,-(baselineRad)*3/4);break;
+		case 15:gfx.arc(baselineRad*sq3,0,baselineRad*1.5,5/6*Math.PI,7/6*Math.PI);break;
+		case 23:gfx.arc(-baselineRad/2*sq3,baselineRad/2,baselineRad/2,3/2*Math.PI,1/6*Math.PI);break;
+		case 24:gfx.arc(-baselineRad*sq3,0,baselineRad*1.5,-1/6*Math.PI,1/6*Math.PI);break;
+		case 25:gfx.moveTo(-(baselineRad)/4*sq3,(baselineRad)*3/4);gfx.lineTo((baselineRad)/4*sq3,-(baselineRad)*3/4);break;
+		case 34:gfx.arc(-baselineRad/2*sq3,-baselineRad/2,baselineRad/2,11/6*Math.PI,1/2*Math.PI);break;
+		case 35:gfx.arc(-baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/6*Math.PI,1/2*Math.PI);break;
+		case 45:gfx.arc(0,-baselineRad,baselineRad/2,1/6*Math.PI,5/6*Math.PI);break;
 	}gfx.stroke();
 }
 
@@ -137,7 +136,9 @@ var cell = function(){
 		rgb(0.6,0.6,0.6);drawHex(0,0,baselineRad-8);
 		for(var i=0;i<this.path.length;i+=2){
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
-			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i,-0.02);
+			gfx.lineCap = "round";
+			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i);
+			gfx.lineCap = "butt";
 		}gfx.restore();
 	};
 
