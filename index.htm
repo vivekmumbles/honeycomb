@@ -176,7 +176,7 @@ canvas.addEventListener("touchstart",function(e){
 	for(var i in cellLs){
 		var c = cellLs[i];
 		var x = c.x*scale/48+ww/2-tchStart[0];
-		var y = c.y*scale/48+wh/2-tchStart[1];
+		var y = c.y*scale/48+wh/2-tchStart[1]-32;
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
