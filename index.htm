@@ -1,6 +1,7 @@
 <!DOCTYPE html><html><head><title>Torxion</title><meta charset="UTF-8">
 <style>*{position:absolute;margin:0px;}</style>
-<body><script type="text/javascript">
+<body>
+<script type="text/javascript">
 
 /*+==========================================================================+*\
                       __________  ___  _  __________  _  __
@@ -65,34 +66,58 @@ function drawHex(x,y,r){
 	gfx.restore();
 };
 
-var drawPath = function(cell,i,offset){
-	if(offset === undefined)offset = 0;
+var drawPath = function(cell,i){
 	gfx.beginPath();
 	var p0 = Math.min(cell.path[i],cell.path[i+1]);
 	var p1 = Math.max(cell.path[i],cell.path[i+1]);
 	switch(p0*10+p1){
-		case  1:gfx.arc(baselineRad/2*sq3,baselineRad/2,baselineRad/2,5/6*Math.PI+offset,3/2*Math.PI-offset);break;
-		case  2:gfx.arc(baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,7/6*Math.PI+offset,3/2*Math.PI-offset);break;
-		case  3:gfx.moveTo(baselineRad/2*sq3-offset,0);gfx.lineTo(-baselineRad/2*sq3+offset,0);break;
-		case  4:gfx.arc(baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/2*Math.PI+offset,5/6*Math.PI-offset);break;
-		case  5:gfx.arc(baselineRad/2*sq3,-baselineRad/2,baselineRad/2,1/2*Math.PI+offset,7/6*Math.PI-offset);break;
-		case 12:gfx.arc(0,baselineRad,baselineRad/2,7/6*Math.PI+offset,11/6*Math.PI-offset);break;
-		case 13:gfx.arc(-baselineRad/2*sq3,baselineRad*1.5,baselineRad*1.5,3/2*Math.PI+offset,11/6*Math.PI-offset);break;
-		case 14:gfx.moveTo((baselineRad-offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo(-(baselineRad+offset)/4*sq3,-(baselineRad+offset)*3/4);break;
-		case 15:gfx.arc(baselineRad*sq3,0,baselineRad*1.5,5/6*Math.PI+offset,7/6*Math.PI-offset);break;
-		case 23:gfx.arc(-baselineRad/2*sq3,baselineRad/2,baselineRad/2,3/2*Math.PI+offset,1/6*Math.PI-offset);break;
-		case 24:gfx.arc(-baselineRad*sq3,0,baselineRad*1.5,-1/6*Math.PI+offset,1/6*Math.PI-offset);break;
-		case 25:gfx.moveTo(-(baselineRad+offset)/4*sq3,(baselineRad-offset)*3/4);gfx.lineTo((baselineRad-offset)/4*sq3,-(baselineRad+offset)*3/4);break;
-		case 34:gfx.arc(-baselineRad/2*sq3,-baselineRad/2,baselineRad/2,11/6*Math.PI+offset,1/2*Math.PI-offset);break;
-		case 35:gfx.arc(-baselineRad/2*sq3,-baselineRad*1.5,baselineRad*1.5,1/6*Math.PI+offset,1/2*Math.PI-offset);break;
-		case 45:gfx.arc(0,-baselineRad,baselineRad/2,1/6*Math.PI+offset,5/6*Math.PI-offset);break;
+		case  1:gfx.arc(48/2*sq3,48/2,48/2,5/6*Math.PI,3/2*Math.PI);break;
+		case  2:gfx.arc(48/2*sq3,48*1.5,48*1.5,7/6*Math.PI,3/2*Math.PI);break;
+		case  3:gfx.moveTo(48/2*sq3,0);gfx.lineTo(-48/2*sq3,0);break;
+		case  4:gfx.arc(48/2*sq3,-48*1.5,48*1.5,1/2*Math.PI,5/6*Math.PI);break;
+		case  5:gfx.arc(48/2*sq3,-48/2,48/2,1/2*Math.PI,7/6*Math.PI);break;
+		case 12:gfx.arc(0,48,48/2,7/6*Math.PI,11/6*Math.PI);break;
+		case 13:gfx.arc(-48/2*sq3,48*1.5,48*1.5,3/2*Math.PI,11/6*Math.PI);break;
+		case 14:gfx.moveTo(48/4*sq3,48*3/4);gfx.lineTo(-48/4*sq3,-48*3/4);break;
+		case 15:gfx.arc(48*sq3,0,48*1.5,5/6*Math.PI,7/6*Math.PI);break;
+		case 23:gfx.arc(-48/2*sq3,48/2,48/2,3/2*Math.PI,1/6*Math.PI);break;
+		case 24:gfx.arc(-48*sq3,0,48*1.5,-1/6*Math.PI,1/6*Math.PI);break;
+		case 25:gfx.moveTo(-48/4*sq3,48*3/4);gfx.lineTo(48/4*sq3,-48*3/4);break;
+		case 34:gfx.arc(-48/2*sq3,-48/2,48/2,11/6*Math.PI,1/2*Math.PI);break;
+		case 35:gfx.arc(-48/2*sq3,-48*1.5,48*1.5,1/6*Math.PI,1/2*Math.PI);break;
+		case 45:gfx.arc(0,-48,48/2,1/6*Math.PI,5/6*Math.PI);break;
 	}gfx.stroke();
 }
 
-//==  GRID GENERATION  =======================================================//
+function textWidth(string,size,spacing){
+	gfx.font = "800 "+size*1.37+"px helvetica";
+	return gfx.measureText(string).width + (spacing * (string.length-1));
+}
 
+function text(string,x,y,size,spacing){
+	gfx.textBaseline = "alphabetic";
+	gfx.font = "800 "+size*1.37+"px helvetica";
+	for(var i=0;i<string.length;++i){
+
+		gfx.fillText(string.charAt(i),x,y+size);
+		x += gfx.measureText(string.charAt(i)).width+spacing;
+	}
+}
+
+//==  GLOBAL VARIABLES  ======================================================//
+
+var overlay = 1; // 0 = none | 1 = title | 2 = win
+var overlayGoal = 0.8;
+var overlayAlpha = 4;
+var overlayBig = "Torxion";
+var overlaySub = "Click to begin";
+var padding = 48;
+var menuHeight = 64;
+var diffHover = 0; // -1 = none | 0 = easy | 1 = med | 2 = hard
+var diffGoal = [0,0,0];
+var diffAlpha = [0,0,0];
+var lastDifficulty = 1;
 var sq3 = Math.sqrt(3);
-var baselineRad = 48;
 var cellLs;
 var markerLs;
 var edgeCellLs;
@@ -102,6 +127,8 @@ var evaluate = false;
 var lastEvalReqTick = -1;
 var cellCtr = 0;
 var width,height,scale;
+
+//==  GRID GENERATION  =======================================================//
 
 var cell = function(){
 	this.id = ++cellCtr+".";
@@ -115,29 +142,34 @@ var cell = function(){
 	this.y;
 
 	this.shadow = function(){
-		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.02;
+		this.rotation+=(this.goalRotation-this.rotation)*elapsed*0.03;
 		if(this.goalRotation !== this.rotation && Math.abs(this.goalRotation-this.rotation)<0.01)this.rotation = this.goalRotation;
 		gfx.save();
 		gfx.translate(this.x,this.y);
 		gfx.rotate(this.rotation*Math.PI/3);
-		gfx.shadowBlur = 8;
-		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,baselineRad-2);
+		gfx.shadowBlur = 4;
+		gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(0,0,48-2);
+		gfx.lineCap = "round";rgb(0.1,0.1,0.1);gfx.lineWidth = 19;
+		gfx.beginPath();
+		gfx.moveTo(48/2*sq3,0);gfx.lineTo(-48/2*sq3,0);
+		gfx.moveTo(48/4*sq3,48*3/4);gfx.lineTo(-48/4*sq3,-48*3/4);
+		gfx.moveTo(-48/4*sq3,48*3/4);gfx.lineTo(48/4*sq3,-48*3/4);
+		gfx.stroke();
+		for(var i=0;i<this.path.length;i+=2)drawPath(this,i);
 		gfx.restore();
 		return this.rotation === this.goalRotation;
 	}
 
 	this.render = function(){
-		for(var i=0;i<6;++i)if(this.adjacent[i] === null && this.markers[i] === null){
-			// TODO: experiment with endcaps
-		}
-
 		gfx.save();
 		gfx.translate(this.x,this.y);
 		gfx.rotate(this.rotation*Math.PI/3);
-		rgb(0.6,0.6,0.6);drawHex(0,0,baselineRad-8);
+		rgb(0.6,0.6,0.6);drawHex(0,0,48-7);
 		for(var i=0;i<this.path.length;i+=2){
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
-			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i,-0.02);
+			gfx.lineCap = "round";
+			rgb(0.9,0.9,0.9);gfx.lineWidth = 10;drawPath(this,i);
+			gfx.lineCap = "butt";
 		}gfx.restore();
 	};
 
@@ -160,17 +192,36 @@ var marker = function(attach,side,color){
 
 	this.update = function(){};
 
+	this.belowRender = function(){
+		gfx.save();
+		gfx.translate(this.attachedTo.x,this.attachedTo.y);
+		var r = this.side*1/3*Math.PI;
+		gfx.shadowColor = hsv(this.color,1,1);
+		gfx.shadowBlur = 8;
+		gfx.lineWidth = 27;
+		hsv(this.color,1,1);
+		gfx.beginPath();
+		gfx.lineCap = "round";
+		gfx.moveTo(0,0);
+		var q = 6;
+		gfx.lineTo(Math.cos(r)*(48-q),Math.sin(r)*(48-q));
+		gfx.stroke();
+
+		gfx.restore();
+	};
+
 	this.render = function(){
 		gfx.save();
 		gfx.translate(this.attachedTo.x,this.attachedTo.y);
 		var r = this.side*1/3*Math.PI;
-		gfx.shadowColor = rgb(0.1,0.1,0.1);
-		gfx.shadowBlur = 8;
+		gfx.shadowColor = hsv(this.color,1,1);
+		gfx.shadowBlur = 4;
 		gfx.lineWidth = 4;
-		hsv(this.color,1,1);
 		gfx.beginPath();
-		gfx.moveTo(Math.cos(r)*baselineRad*0.92,Math.sin(r)*baselineRad*0.92);
-		gfx.lineTo(Math.cos(r)*baselineRad*1.12,Math.sin(r)*baselineRad*1.12);
+		gfx.lineCap = "round";
+		gfx.moveTo(Math.cos(r)*(48-5.9),Math.sin(r)*(48-5.9));
+		var q = 6;
+		gfx.lineTo(Math.cos(r)*(48-q),Math.sin(r)*(48-q));
 		gfx.stroke();
 
 		gfx.restore();
@@ -181,6 +232,7 @@ function generateGrid(minDepth,markerPairs,preGrid){
 	// initializes cells, grid, and cellLs
 	cellLs = [];
 	edgeCellLs = [];
+	fillLs = [];
 	for(var i=0;i<preGrid.length;++i)
 	for(var j=0;j<preGrid[i].length;++j)
 	if(preGrid[i][j] === 1){
@@ -201,8 +253,8 @@ function generateGrid(minDepth,markerPairs,preGrid){
 	for(var i=0;i<grid.length;++i)
 	for(var j=0;j<grid[i].length;++j)
 	if(grid[i][j] !== null){
-		var x = grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*baselineRad/2*sq3;
-		var y = grid[i][j].y = (1.5*baselineRad*j)-1.5*baselineRad*Math.floor(grid.length/2);
+		var x = grid[i][j].x = (-(j-Math.floor(grid.length/2))+2*i-2*Math.floor(grid[0].length/2))*48/2*sq3;
+		var y = grid[i][j].y = (1.5*48*j)-1.5*48*Math.floor(grid.length/2);
 		if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
 		if(i<grid.length-1)                     grid[i][j].adjacent[0]=grid[i+1][j  ];
 		if(i<grid.length-1&&j<grid[i].length-1) grid[i][j].adjacent[1]=grid[i+1][j+1];
@@ -218,13 +270,13 @@ function generateGrid(minDepth,markerPairs,preGrid){
 		}
 	}
 
-	minX -= baselineRad/2*sq3;
-	maxX += baselineRad/2*sq3;
-	minY -= baselineRad;
-	maxY += baselineRad;
+	minX -= 48/2*sq3;
+	maxX += 48/2*sq3;
+	minY -= 48;
+	maxY += 48;
 
-	width  = (maxX-minX)/baselineRad;
-	height = (maxY-minY)/baselineRad;
+	width  = (maxX-minX)/48;
+	height = (maxY-minY)/48;
 
 	// initialize markers
 	markerLs = [];
@@ -311,6 +363,7 @@ function generateGrid(minDepth,markerPairs,preGrid){
 	// randomize rotations
 	for(var i in cellLs)cellLs[i].goalRotation+=rInt(6)-3;
 	requestEval();
+	window.onresize();
 };
 
 function requestEval(){
@@ -320,7 +373,9 @@ function requestEval(){
 	requestAnimationFrame(render);
 }
 
+var firstEval = true;
 function evalPaths(){
+	var connected = 0;
 	for(var i=0;i<fillLs.length;++i)fillLs[i][3] = 0; // fade everything out, gets set back to true if its detected
 	for(var i=0;i<markerLs.length;i+=2){
 		// returns true=found pair,save path | false=found null,ignore path
@@ -362,6 +417,7 @@ function evalPaths(){
 		var m = markerLs[i];
 		recurse(m.attachedTo,m.side,m);
 		if(tracedPath.length > 0){
+			++connected;
 			var hashFound = false;
 			for(var q in fillLs){
 				var f = fillLs[q];
@@ -372,9 +428,53 @@ function evalPaths(){
 			}if(!hashFound)fillLs.push([m.color,tracedPath,0,1,hash]);
 		}
 	}
+
+	if(firstEval)firstEval = false;
+	else if(connected*2 === markerLs.length){
+		overlayBig = "You Win!";
+		overlaySub = "Click to start new game";
+		overlay = 2;
+		overlayGoal = 0.8;
+	}
 };
 
 //==  MAIN LOOP  =============================================================//
+
+function menuHover(diff){
+	if(diffHover === diff)return;
+	requestAnimationFrame(render);
+	diffHover = diff;
+	diffGoal = [0,0,0];
+	if(diff>=0)diffGoal[diff] = 1;
+};
+
+function renderMenu(){
+	gfx.save();
+
+	gfx.lineCap = "round";
+	gfx.shadowBlur = 8;
+	gfx.lineWidth = 8;
+
+	gfx.beginPath();
+		gfx.shadowColor = hsv(0.3+goldenAngle*4,1,1); // 2 == blue | 3 == red | 4 == green
+		gfx.moveTo(ww/2-8-64,wh-32);
+		gfx.lineTo(ww/2+8-64,wh-32);
+	gfx.stroke();
+
+	gfx.beginPath();
+		gfx.shadowColor = hsv(0.3+goldenAngle*2,1,1); // 2 == blue | 3 == red | 4 == green
+		gfx.moveTo(ww/2-8,wh-32);
+		gfx.lineTo(ww/2+8,wh-32);
+	gfx.stroke();
+
+	gfx.beginPath();
+		gfx.shadowColor = hsv(0.3+goldenAngle*3,1,1); // 2 == blue | 3 == red | 4 == green
+		gfx.moveTo(ww/2-8+64,wh-32);
+		gfx.lineTo(ww/2+8+64,wh-32);
+	gfx.stroke();
+
+	gfx.restore();
+};
 
 function render(){
 	var currentTick = new Date().getTime()-tickOffset;
@@ -390,10 +490,37 @@ function render(){
 	gfx.fillRect(0,0,ww,wh);
 	gfx.save();
 
-	gfx.translate(ww/2,wh/2);
-	gfx.scale(scale/baselineRad,scale/baselineRad);
-
 	var animating = false;
+
+	// render menu
+	for(var d=0;d<3;++d){
+		gfx.save();
+		diffAlpha[d] += (diffGoal[d]-diffAlpha[d])*elapsed*0.03;
+		if(Math.abs(diffAlpha[d]-diffGoal[d])<0.01)diffAlpha[d] = diffGoal[d];
+		if(diffAlpha[d] === 0)continue;
+
+		var difficulty;
+		switch(d){
+			case 0:difficulty = "Easy";break;
+			case 1:difficulty = "Medium";break;
+			case 2:difficulty = "Hard";break;
+		}
+
+		gfx.shadowColor = rgba(0.1,0.1,0.1,diffAlpha[d]);
+		gfx.shadowBlur = 8;
+		var w = textWidth(difficulty,32,-3);
+		text(difficulty,ww/2-w/2,wh-64-28,32,-3);
+		gfx.restore();
+		rgba(0.9,0.9,0.9,diffAlpha[d]);
+		text(difficulty,ww/2-w/2,wh-64-28,32,-3);
+
+		if(diffGoal[d] !== diffAlpha[d])animating = true;
+	}renderMenu();
+
+	gfx.translate(ww/2,wh/2-32);
+	gfx.scale(scale/48,scale/48);
+
+	for(var i in markerLs)markerLs[i].belowRender();
 	for(var i in cellLs)if(!cellLs[i].shadow())animating = true;
 	for(var i in cellLs)cellLs[i].render();
 	for(var i in markerLs)markerLs[i].render();
@@ -406,8 +533,34 @@ function render(){
 		gfx.shadowBlur = 4;
 		gfx.lineWidth = 4;
 		for(var j in f[1])f[1][j].highlight();
-	}if(animating)requestAnimationFrame(render);
-	gfx.restore();
+	}gfx.restore();
+
+
+	// render overlay
+	gfx.save();
+	if(overlayGoal !== 0 || overlayAlpha !== 0){
+		overlayAlpha += (overlayGoal-overlayAlpha)*elapsed*0.03;
+		if(Math.abs(overlayAlpha-overlayGoal)<0.01)overlayAlpha = overlayGoal;
+		rgba(0.1,0.1,0.1,overlayAlpha);
+		gfx.fillRect(0,0,ww,wh);
+
+		gfx.save();
+		gfx.shadowColor = rgba(0.9,0.9,0.9,overlayAlpha);
+		gfx.shadowBlur = 16;
+		var torsionWidth = textWidth(overlayBig,64,-6);
+		var clickWidth = textWidth(overlaySub,24,-3);
+		text(overlayBig,ww/2-torsionWidth/2,wh/2-32,64,-6);
+		text(overlaySub,ww/2-clickWidth/2,wh/2+48,24,-3);
+		gfx.restore();
+		rgba(0.9,0.9,0.9,overlayAlpha);
+		text(overlayBig,ww/2-torsionWidth/2,wh/2-32,64,-6);
+		rgba(0.7,0.7,0.7,overlayAlpha);
+		text(overlaySub,ww/2-clickWidth/2,wh/2+48,24,-3);
+
+		if(overlayAlpha !== overlayGoal)animating = true;
+	}gfx.restore();
+
+	if(animating)requestAnimationFrame(render);
 };
 
 //==  INPUT HANDLING  ========================================================//
@@ -419,14 +572,44 @@ function getMousePos(evt){
 	return{x:evt.clientX-rect.left,y:evt.clientY-rect.top};
 };
 
-canvas.addEventListener("mouseup",function(e){
+canvas.addEventListener("mousemove",function(e){
+	if(overlay !== 0)return;
 	var mouse = getMousePos(e);
+	if(mouse.y>wh-menuHeight){
+		if(mouse.x>ww/2-12-64 && mouse.x<ww/2+12-64){menuHover(0);return;}
+		if(mouse.x>ww/2-12    && mouse.x<ww/2+12   ){menuHover(1);return;}
+		if(mouse.x>ww/2-12+64 && mouse.x<ww/2+12+64){menuHover(2);return;}
+	}menuHover(-1);
+});
+
+canvas.addEventListener("mouseup",function(e){
+	if(overlay === 1){
+		for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;requestEval();
+		overlay=overlayGoal=0;
+		requestAnimationFrame(render);
+		return;
+	}else if(overlay === 2){
+		switch(lastDifficulty){
+			case 0:generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);break;
+			case 1:generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);break;
+			case 2:generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);break;
+		}overlay=overlayGoal=0;
+		requestAnimationFrame(render);
+		return;
+	}var mouse = getMousePos(e);
+	if(mouse.y>wh-menuHeight){
+		if(mouse.x>ww/2-12-64 && mouse.x<ww/2+12-64){lastDifficulty=0;generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);}
+		if(mouse.x>ww/2-12    && mouse.x<ww/2+12   ){lastDifficulty=1;generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);}
+		if(mouse.x>ww/2-12+64 && mouse.x<ww/2+12+64){lastDifficulty=2;generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);}
+		return;
+	}
+
 	var minDist = Infinity;
 	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
-		var x = c.x*scale/baselineRad+ww/2-mouse.x;
-		var y = c.y*scale/baselineRad+wh/2-mouse.y;
+		var x = c.x*scale/48+ww/2-mouse.x;
+		var y = c.y*scale/48+wh/2-mouse.y-32;
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
@@ -446,6 +629,8 @@ document.addEventListener("keyup",function(e){
 	}
 },false);
 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO //
+
 canvas.addEventListener("touchstart",function(e){
 	// e.preventDefault();  // turns off clicking
 	var tch = e.changedTouches[0];
@@ -456,8 +641,8 @@ canvas.addEventListener("touchstart",function(e){
 	var minCell = null;
 	for(var i in cellLs){
 		var c = cellLs[i];
-		var x = c.x*scale/baselineRad+ww/2-tchStart[0];
-		var y = c.y*scale/baselineRad+wh/2-tchStart[1];
+		var x = c.x*scale/48+ww/2-tchStart[0];
+		var y = c.y*scale/48+wh/2-tchStart[1]-32;
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
@@ -479,6 +664,8 @@ canvas.addEventListener("touchmove",function(e){
 	}requestEval();
 },false);
 
+// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO //
+
 //==  PROGRAM ENTRY + MISC  ==================================================//
 
 canvas.oncontextmenu = function(){return false;}; // prevent right click menu
@@ -487,8 +674,8 @@ window.onresize = function(){ // auto-resize canvas to window
 	ww = canvas.width  = window.innerWidth;
 	wh = canvas.height = window.innerHeight;
 
-	var scaleX = ww/(width*1.2);
-	var scaleY = wh/(height*1.2);
+	var scaleX = (ww-2*padding)/width;
+	var scaleY = (wh-2*padding-menuHeight)/height;
 	scale = Math.min(scaleX,scaleY);
 
 	requestAnimationFrame(render);
@@ -499,11 +686,11 @@ window.onresize = function(){ // auto-resize canvas to window
 	var minDepth = 6;
 	var markerPairs = 7;
 	window.onresize();
-//	generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);
-//	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
-	generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);
-	window.onresize();
-	tickOffset=new Date().getTime();requestAnimationFrame(render);}
+	generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);
+	for(var i in cellLs){
+		cellLs[i].rotation = cellLs[i].goalRotation;
+		cellLs[i].goalRotation = 0;
+	}requestEval();tickOffset=new Date().getTime();requestAnimationFrame(render);}
 )();
 
 </script></body></html>
