@@ -143,7 +143,7 @@ canvas.addEventListener("mouseup",function(e){
 	for(var i in cellLs){
 		var c = cellLs[i];
 		var x = c.x*scale/48+ww/2-mouse.x;
-		var y = c.y*scale/48+wh/2-mouse.y-64;
+		var y = c.y*scale/48+wh/2-mouse.y-32;
 		var sqDist = x*x+y*y;
 		if(sqDist<minDist){
 			minDist = sqDist;
