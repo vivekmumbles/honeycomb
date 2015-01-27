@@ -356,7 +356,9 @@ function requestEval(){
 	requestAnimationFrame(render);
 }
 
+var firstEval = true;
 function evalPaths(){
+	var connected = 0;
 	for(var i=0;i<fillLs.length;++i)fillLs[i][3] = 0; // fade everything out, gets set back to true if its detected
 	for(var i=0;i<markerLs.length;i+=2){
 		// returns true=found pair,save path | false=found null,ignore path
@@ -398,6 +400,7 @@ function evalPaths(){
 		var m = markerLs[i];
 		recurse(m.attachedTo,m.side,m);
 		if(tracedPath.length > 0){
+			++connected;
 			var hashFound = false;
 			for(var q in fillLs){
 				var f = fillLs[q];
@@ -407,5 +410,13 @@ function evalPaths(){
 				break;
 			}if(!hashFound)fillLs.push([m.color,tracedPath,0,1,hash]);
 		}
+	}
+
+	if(firstEval)firstEval = false;
+	else if(connected*2 === markerLs.length){
+		overlayBig = "You Win!";
+		overlaySub = "Click to start new game";
+		overlay = 2;
+		overlayGoal = 0.8;
 	}
 };
