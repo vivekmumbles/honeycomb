@@ -5,7 +5,7 @@
 <script type="text/javascript">
 
 var overlay = 1; // 0 = none, 1 = title, 2 = win
-var overlayGoal = 0.7;
+var overlayGoal = 0.8;
 var overlayAlpha = 1;
 var padding = 48;
 var menuHeight = 64;
@@ -121,12 +121,16 @@ function render(){
 
 		gfx.save();
 		gfx.shadowColor = rgba(0.9,0.9,0.9,overlayAlpha);
-		gfx.shadowBlur = 4;
-		var w = textWidth("Torxion",64,-6);
-		text("Torxion",ww/2-w/2,wh/2-32,64,-6);
+		gfx.shadowBlur = 16;
+		var torsionWidth = textWidth("Torxion",64,-6);
+		var clickWidth = textWidth("Click to begin",24,-3);
+		text("Torxion",ww/2-torsionWidth/2,wh/2-32,64,-6);
+		text("Click to begin",ww/2-clickWidth/2,wh/2+48,24,-3);
 		gfx.restore();
 		rgba(0.9,0.9,0.9,overlayAlpha);
-		text("Torxion",ww/2-w/2,wh/2-32,64,-6);
+		text("Torxion",ww/2-torsionWidth/2,wh/2-32,64,-6);
+		rgba(0.7,0.7,0.7,overlayAlpha);
+		text("Click to begin",ww/2-clickWidth/2,wh/2+48,24,-3);
 
 		if(overlayAlpha !== overlayGoal)animating = true;
 	}gfx.restore();
