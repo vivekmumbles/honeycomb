@@ -114,13 +114,8 @@ var overlaySub = "Click to begin";
 var padding = 48;
 var menuHeight = 64;
 var diffHover = 0; // -1 = none | 0 = easy | 1 = med | 2 = hard
-<<<<<<< HEAD
 var diffGoal = [0,0,0,0,0];
 var diffAlpha = [0,0,0,0,0];
-=======
-var diffGoal = [0,0,0];
-var diffAlpha = [0,0,0];
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 var lastDifficulty = 1;
 var sq3 = Math.sqrt(3);
 var cellLs;
@@ -449,11 +444,7 @@ function menuHover(diff){
 	if(diffHover === diff)return;
 	requestAnimationFrame(render);
 	diffHover = diff;
-<<<<<<< HEAD
 	diffGoal = [0,0,0,0,0];
-=======
-	diffGoal = [0,0,0];
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 	if(diff>=0)diffGoal[diff] = 1;
 };
 
@@ -466,48 +457,34 @@ function renderMenu(){
 
 	gfx.beginPath();
 		gfx.shadowColor = hsv(0.3+goldenAngle*4,1,1); // 2 == blue | 3 == red | 4 == green
-<<<<<<< HEAD
 		gfx.moveTo(ww/2-8-128,wh-32);
 		gfx.lineTo(ww/2+8-128,wh-32);
 	gfx.stroke();
 
 	gfx.beginPath();
 		gfx.shadowColor = hsv(0.3+goldenAngle*2,1,1); // 2 == blue | 3 == red | 4 == green
-=======
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 		gfx.moveTo(ww/2-8-64,wh-32);
 		gfx.lineTo(ww/2+8-64,wh-32);
 	gfx.stroke();
 
 	gfx.beginPath();
-<<<<<<< HEAD
 		gfx.shadowColor = hsv(0.3+goldenAngle*3,1,1); // 2 == blue | 3 == red | 4 == green
-=======
-		gfx.shadowColor = hsv(0.3+goldenAngle*2,1,1); // 2 == blue | 3 == red | 4 == green
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 		gfx.moveTo(ww/2-8,wh-32);
 		gfx.lineTo(ww/2+8,wh-32);
 	gfx.stroke();
 
 	gfx.beginPath();
-<<<<<<< HEAD
 		gfx.shadowColor = hsv(0.3+goldenAngle*5,1,1); // 2 == blue | 3 == red | 4 == green
-=======
-		gfx.shadowColor = hsv(0.3+goldenAngle*3,1,1); // 2 == blue | 3 == red | 4 == green
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 		gfx.moveTo(ww/2-8+64,wh-32);
 		gfx.lineTo(ww/2+8+64,wh-32);
 	gfx.stroke();
 
-<<<<<<< HEAD
 	gfx.beginPath();
 		gfx.shadowColor = hsv(0.3+goldenAngle*6,1,1); // 2 == blue | 3 == red | 4 == green
 		gfx.moveTo(ww/2-8+128,wh-32);
 		gfx.lineTo(ww/2+8+128,wh-32);
 	gfx.stroke();
 
-=======
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 	gfx.restore();
 };
 
@@ -528,11 +505,7 @@ function render(){
 	var animating = false;
 
 	// render menu
-<<<<<<< HEAD
 	for(var d=0;d<5;++d){
-=======
-	for(var d=0;d<3;++d){
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 		gfx.save();
 		diffAlpha[d] += (diffGoal[d]-diffAlpha[d])*elapsed*0.03;
 		if(Math.abs(diffAlpha[d]-diffGoal[d])<0.01)diffAlpha[d] = diffGoal[d];
@@ -543,11 +516,8 @@ function render(){
 			case 0:difficulty = "Easy";break;
 			case 1:difficulty = "Medium";break;
 			case 2:difficulty = "Hard";break;
-<<<<<<< HEAD
 			case 3:difficulty = "Shuffle";break;
 			case 4:difficulty = "Reset";break;
-=======
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 		}
 
 		gfx.shadowColor = rgba(0.1,0.1,0.1,diffAlpha[d]);
@@ -620,17 +590,11 @@ canvas.addEventListener("mousemove",function(e){
 	if(overlay !== 0)return;
 	var mouse = getMousePos(e);
 	if(mouse.y>wh-menuHeight){
-<<<<<<< HEAD
 		if(mouse.x>ww/2-12-128 && mouse.x<ww/2+12-128){menuHover(0);return;}
 		if(mouse.x>ww/2-12-64  && mouse.x<ww/2+12-64 ){menuHover(1);return;}
 		if(mouse.x>ww/2-12     && mouse.x<ww/2+12    ){menuHover(2);return;}
 		if(mouse.x>ww/2-12+64  && mouse.x<ww/2+12+64 ){menuHover(3);return;}
 		if(mouse.x>ww/2-12+128 && mouse.x<ww/2+12+128){menuHover(4);return;}
-=======
-		if(mouse.x>ww/2-12-64 && mouse.x<ww/2+12-64){menuHover(0);return;}
-		if(mouse.x>ww/2-12    && mouse.x<ww/2+12   ){menuHover(1);return;}
-		if(mouse.x>ww/2-12+64 && mouse.x<ww/2+12+64){menuHover(2);return;}
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 	}menuHover(-1);
 });
 
@@ -650,17 +614,11 @@ canvas.addEventListener("mouseup",function(e){
 		return;
 	}var mouse = getMousePos(e);
 	if(mouse.y>wh-menuHeight){
-<<<<<<< HEAD
 		if(mouse.x>ww/2-12-128 && mouse.x<ww/2+12-128){lastDifficulty=0;generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);}
 		if(mouse.x>ww/2-12-64  && mouse.x<ww/2+12-64 ){lastDifficulty=1;generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);}
 		if(mouse.x>ww/2-12     && mouse.x<ww/2+12    ){lastDifficulty=2;generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);}
 		if(mouse.x>ww/2-12+64  && mouse.x<ww/2+12+64 )for(var i in cellLs)cellLs[i].goalRotation=rInt(6)-3;requestEval();
 		if(mouse.x>ww/2-12+128 && mouse.x<ww/2+12+128)for(var i in cellLs)cellLs[i].goalRotation=0;requestEval();
-=======
-		if(mouse.x>ww/2-12-64 && mouse.x<ww/2+12-64){lastDifficulty=0;generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);}
-		if(mouse.x>ww/2-12    && mouse.x<ww/2+12   ){lastDifficulty=1;generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);}
-		if(mouse.x>ww/2-12+64 && mouse.x<ww/2+12+64){lastDifficulty=2;generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);}
->>>>>>> 6441e69f735193f5d6a66592bdd4ee553cf26987
 		return;
 	}
 
@@ -681,8 +639,6 @@ canvas.addEventListener("mouseup",function(e){
 		case 3:minCell.rotateCW();break;
 	}requestEval();
 });
-
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO //
 
 // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO //
 
