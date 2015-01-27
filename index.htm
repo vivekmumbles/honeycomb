@@ -50,7 +50,6 @@ function renderMenu(){
 };
 
 function render(){
-	console.log("RENDERING");
 	var currentTick = new Date().getTime()-tickOffset;
 	elapsed = Math.min(currentTick-tick,5);
 	tick = currentTick;
@@ -82,15 +81,15 @@ function render(){
 		gfx.shadowColor = rgba(0.1,0.1,0.1,diffAlpha[d]);
 		gfx.shadowBlur = 8;
 		var w = textWidth(difficulty,32,-3);
-		text(difficulty,ww/2-w/2,wh-64-32,32,-3);
+		text(difficulty,ww/2-w/2,wh-64-28,32,-3);
 		gfx.restore();
 		rgba(0.9,0.9,0.9,diffAlpha[d]);
-		text(difficulty,ww/2-w/2,wh-64-32,32,-3);
+		text(difficulty,ww/2-w/2,wh-64-28,32,-3);
 
 		if(diffGoal[d] !== diffAlpha[d])animating = true;
 	}
 
-	gfx.translate(ww/2,wh/2-64);
+	gfx.translate(ww/2,wh/2-32);
 	gfx.scale(scale/48,scale/48);
 
 	for(var i in markerLs)markerLs[i].belowRender();
