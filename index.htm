@@ -503,7 +503,7 @@ function renderMenu(){
 function renderPath(f){
 	var cScale = scale/48;
 	var animating = false;
-	if(f[6] === null || f[5] !== scale){
+	if(f[6] === null || f[5] !== scale || f[6].width !== ww || f[6].height !== wh){
 		animating = true;
 		f[5] = scale;
 		f[6] = document.createElement("canvas");
