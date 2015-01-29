@@ -112,8 +112,7 @@ var cell = function(){
 			gfx.scale(cScale,cScale);
 			gfx.shadowBlur = 4;
 			gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(48-2);
-//			gfx.lineCap = "round";
-rgb(0.1,0.1,0.1);gfx.lineWidth = 19;
+			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;
 			gfx.beginPath();
 			gfx.moveTo(48/2*sq3,0);gfx.lineTo(-48/2*sq3,0);
 			gfx.moveTo(48/4*sq3,48*3/4);gfx.lineTo(-48/4*sq3,-48*3/4);
@@ -541,13 +540,14 @@ function renderOverlay(){
 		gfx.save();
 		gfx.shadowColor = rgba(0.9,0.9,0.9,overlayAlpha);
 		gfx.shadowBlur = 16;
-		text(overlayBig,wh/2-32,64,-6);
-		text(overlaySub,wh/2+48,24,-3);
+		var spacing = (0.8-overlayAlpha);
+		text(overlayBig,wh/2-32,64,-6+spacing*10);
+		text(overlaySub,wh/2+48,24,-3+spacing*2);
 		gfx.restore();
 		rgba(0.9,0.9,0.9,overlayAlpha);
-		text(overlayBig,wh/2-32,64,-6);
+		text(overlayBig,wh/2-32,64,-6+spacing*10);
 		rgba(0.7,0.7,0.7,overlayAlpha);
-		text(overlaySub,wh/2+48,24,-3);
+		text(overlaySub,wh/2+48,24,-3+spacing*2);
 
 		if(overlayAlpha !== overlayGoal)animating = true;
 	}gfx.restore();
