@@ -83,7 +83,7 @@ var overlay=1,overlayGoal=0.8,overlayAlpha=4,overlayBig="Torxion",overlaySub="Cl
 var diffHover=0,diffGoal=[0,0,0,0,0],diffAlpha=[0,0,0,0,0],lastDifficulty = 1;
 var fading=false,evaluate=false,lastEvalReqTick=-1;
 var cellLs,markerLs,edgeCellLs,fillLs;
-var width,height,oldScale=-1,scale;
+var width,height,oldScale=-1,scale=100,goalScale;
 var phi=0.381966,sq3=Math.sqrt(3);
 var padding=48,menuHeight=64;
 var cellCtr = 0;
@@ -560,6 +560,9 @@ function render(){
 	elapsed = Math.min(currentTick-tick,5);
 	tick = currentTick;
 	if(evaluate){evaluate=false;evalPaths();}
+	scale += (goalScale-scale)*elapsed*0.03;
+	if(Math.abs(scale-goalScale) < 0.01)scale = goalScale;
+	if(goalScale !== scale){animating=true;window.onresize();}
 	rgb(0.9,0.9,0.9);
 	gfx.fillRect(0,0,ww,wh);
 	gfx.save();
@@ -688,7 +691,7 @@ window.onresize = function(){ // auto-resize canvas to window
 
 	var scaleX = (ww-2*padding)/width;
 	var scaleY = (wh-2*padding-menuHeight)/height;
-	scale = Math.min(scaleX,scaleY);
+	goalScale = Math.min(scaleX,scaleY);
 
 	requestAnimationFrame(render);
 };
