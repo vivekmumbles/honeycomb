@@ -620,7 +620,7 @@ canvas.addEventListener("mouseup",function(e){
 		if(mouse.x>ww/2-12-64  && mouse.x<ww/2+12-64 ){lastDifficulty=1;generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);}
 		if(mouse.x>ww/2-12     && mouse.x<ww/2+12    ){lastDifficulty=2;generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);}
 		if(mouse.x>ww/2-12+64  && mouse.x<ww/2+12+64 ){lastDifficulty=3;generateGrid(7,9,[[1,1,1,1,1,0,0,0,0],[1,1,1,1,1,1,0,0,0],[1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,1,0],[1,1,1,1,0,1,1,1,1],[0,1,1,1,1,1,1,1,1],[0,0,1,1,1,1,1,1,1],[0,0,0,1,1,1,1,1,1],[0,0,0,0,1,1,1,1,1]]);}
-		if(mouse.x>ww/2-12+128 && mouse.x<ww/2+12+128)for(var i in cellLs)cellLs[i].goalRotation+=rand(6)-3;requestEval();
+		if(mouse.x>ww/2-12+128 && mouse.x<ww/2+12+128)for(var i in cellLs)cellLs[i].goalRotation+=rand(7)-3;requestEval();
 		return;
 	}
 
