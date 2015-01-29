@@ -376,7 +376,7 @@ function evalPaths(){
 	for(var i=0;i<fillLs.length;++i)fillLs[i][3] = 0; // fade everything out, gets set back to true if its detected
 	for(var i=0;i<markerLs.length;i+=2){
 		var tracedPath = [];
-		var hash = "";
+		var hash = i+"|";
 		var recurse = function(fromCell,fromSide,originMkr){
 			fromSide = (fromSide-fromCell.goalRotation).mod(6);
 			var toSide;
