@@ -535,19 +535,19 @@ function renderOverlay(){
 	if(overlayGoal !== 0 || overlayAlpha !== 0){
 		overlayAlpha += (overlayGoal-overlayAlpha)*elapsed*0.03;
 		if(Math.abs(overlayAlpha-overlayGoal)<0.01)overlayAlpha = overlayGoal;
-		rgba(0.1,0.1,0.1,overlayAlpha);
+		rgba(0.9,0.9,0.9,overlayAlpha);
 		gfx.fillRect(0,0,ww,wh);
 
 		gfx.save();
-		gfx.shadowColor = rgba(0.9,0.9,0.9,overlayAlpha);
+		gfx.shadowColor = rgba(0.1,0.1,0.1,overlayAlpha);
 		gfx.shadowBlur = 16;
 		var spacing = (0.8-overlayAlpha);
 		text(overlayBig,wh/2-32,64,-6+spacing*10);
 		text(overlaySub,wh/2+48,24,-3+spacing*2);
 		gfx.restore();
-		rgba(0.9,0.9,0.9,overlayAlpha);
+		rgba(0.1,0.1,0.1,overlayAlpha);
 		text(overlayBig,wh/2-32,64,-6+spacing*10);
-		rgba(0.7,0.7,0.7,overlayAlpha);
+		rgba(0.3,0.3,0.3,overlayAlpha);
 		text(overlaySub,wh/2+48,24,-3+spacing*2);
 
 		if(overlayAlpha !== overlayGoal)animating = true;
