@@ -358,7 +358,7 @@ function generateGrid(minDepth,markerPairs,preGrid){
 	}
 
 	// randomize rotations
-	for(var i in cellLs)cellLs[i].goalRotation+=rand(6)-3;
+	for(var i in cellLs)cellLs[i].goalRotation+=rand(2)==0?-rand(3)-1:rand(3)+1;
 	requestEval();
 	window.onresize();
 };
@@ -459,8 +459,8 @@ function renderMenu(){
 			case 0:t = "Easy";break;
 			case 1:t = "Medium";break;
 			case 2:t = "Hard";break;
-			case 3:t = "Shuffle";break;
-			case 4:t = "Solution";break;
+			case 3:t = "Extreme";break;
+			case 4:t = "Shuffle";break;
 		}
 
 		gfx.shadowColor = rgba(0.1,0.1,0.1,diffAlpha[d]);
@@ -618,8 +618,8 @@ canvas.addEventListener("mouseup",function(e){
 		if(mouse.x>ww/2-12-128 && mouse.x<ww/2+12-128){lastDifficulty=0;generateGrid(2,3,[[1,1,0],[1,1,1],[0,1,1]]);}
 		if(mouse.x>ww/2-12-64  && mouse.x<ww/2+12-64 ){lastDifficulty=1;generateGrid(4,5,[[1,1,1,0,0],[1,1,1,1,0],[1,1,0,1,1],[0,1,1,1,1],[0,0,1,1,1]]);}
 		if(mouse.x>ww/2-12     && mouse.x<ww/2+12    ){lastDifficulty=2;generateGrid(6,7,[[1,1,1,1,0,0,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0],[1,1,1,0,1,1,1],[0,1,1,1,1,1,1],[0,0,1,1,1,1,1],[0,0,0,1,1,1,1]]);}
-		if(mouse.x>ww/2-12+64  && mouse.x<ww/2+12+64 )for(var i in cellLs)cellLs[i].goalRotation=rand(6)-3;requestEval();
-		if(mouse.x>ww/2-12+128 && mouse.x<ww/2+12+128)for(var i in cellLs)cellLs[i].goalRotation=0;requestEval();
+		if(mouse.x>ww/2-12+64  && mouse.x<ww/2+12+64 ){lastDifficulty=2;generateGrid(7,9,[[1,1,1,1,1,0,0,0,0],[1,1,1,1,1,1,0,0,0],[1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,1,0],[1,1,1,1,0,1,1,1,1],[0,1,1,1,1,1,1,1,1],[0,0,1,1,1,1,1,1,1],[0,0,0,1,1,1,1,1,1],[0,0,0,0,1,1,1,1,1]]);}
+		if(mouse.x>ww/2-12+128 && mouse.x<ww/2+12+128)for(var i in cellLs)cellLs[i].goalRotation+=rand(6)-3;requestEval();
 		return;
 	}
 
