@@ -113,12 +113,7 @@ var cell = function(){
 			gfx.shadowBlur = 4;
 			gfx.shadowColor = rgb(0.1,0.1,0.1);drawHex(48-2);
 			rgb(0.1,0.1,0.1);gfx.lineWidth = 19;
-			gfx.beginPath();
-			gfx.moveTo(48/2*sq3,0);gfx.lineTo(-48/2*sq3,0);
-			gfx.moveTo(48/4*sq3,48*3/4);gfx.lineTo(-48/4*sq3,-48*3/4);
-			gfx.moveTo(-48/4*sq3,48*3/4);gfx.lineTo(48/4*sq3,-48*3/4);
-			gfx.stroke();
-			for(var i=0;i<this.path.length;i+=2)drawPath(this,i);
+			for(var i=0;i<this.path.length;i+=2)for(var j=0;j<2;++j)drawPath(this,i);
 			gfx = canvas.getContext("2d");
 		}
 
@@ -141,6 +136,7 @@ var cell = function(){
 			gfx = this.renderCanvas.getContext("2d");
 			gfx.translate(this.renderCanvas.width/2,this.renderCanvas.height/2);
 			gfx.scale(cScale,cScale);
+			rgb(0.1,0.1,0.1);drawHex(48-2);
 			rgb(0.6,0.6,0.6);drawHex(48-7);
 			for(var i=0;i<this.path.length;i+=2){
 				rgb(0.1,0.1,0.1);gfx.lineWidth = 19;drawPath(this,i);
@@ -545,10 +541,6 @@ function renderOverlay(){
 		text(overlayBig,wh/2-32,64,-6+spacing*10);
 		text(overlaySub,wh/2+48,24,-3+spacing*2);
 		gfx.restore();
-		rgba(0.1,0.1,0.1,overlayAlpha);
-		text(overlayBig,wh/2-32,64,-6+spacing*10);
-		rgba(0.3,0.3,0.3,overlayAlpha);
-		text(overlaySub,wh/2+48,24,-3+spacing*2);
 
 		if(overlayAlpha !== overlayGoal)animating = true;
 	}gfx.restore();
